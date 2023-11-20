@@ -5,6 +5,7 @@ db = MySQLdb.connect(
  "root",
  "123",
  "employees" )
+ #asas
 
 cursor = db.cursor()
 cursor.execute("select * from departments")
