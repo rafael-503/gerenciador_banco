@@ -4,12 +4,11 @@ import os
 
 
 def importaCSV(nomeArquivo):
-    nomeArq = os.path.splitext(os.path.basename(nomeArquivo))[0] # Retorna o nome do arquivo sem a extensao
-    nomeSaida = os.path.join('data', f"{nomeArq}.banco") # Define o nome do arquivo de saida
-
-    # Verifica se a pasta 'db' existe e a cria, se necessário
     if not os.path.exists('data'): # Verifica se a pasta data existe
         os.makedirs('data')
+
+    nomeArq = os.path.splitext(os.path.basename(nomeArquivo))[0] # Retorna o nome do arquivo sem a extensao
+    nomeSaida = os.path.join('data', f"{nomeArq}.banco") # Define o nome do arquivo de saida
 
     with open(nomeArquivo, 'r') as file:
         reader = csv.reader(file)
@@ -19,19 +18,37 @@ def importaCSV(nomeArquivo):
                 writer.writerow(row)
     print("Tabela importada com sucesso!")
 
+def importaBanco(nomeBanco, tabela):
+    if not os.path.exists('data'): # Verifica se a pasta data existe
+        os.makedirs('data')
 
-importaCSV('employees.csv')
+    nomeSaida = os.path.join('data', f"{tabela}.banco") # Define o nome do arquivo de saida
+
+    db = MySQLdb.connect(
+    "localhost",
+    "root",
+    "123",
+    "employees" )
+
+    cursor = db.cursor()
+    cursor.execute("select * from "+tabela)
+    data = cursor.fetchall()
+    for row in data:
+        print(row) # Tratar o retorno dos dados para datetime
+
+        
+
+
+# importaCSV('employees.csv')
+importaBanco('employees', 'employees')
+
+
 
 
 '''
-db = MySQLdb.connect(
- "localhost",
- "root",
- "123",
- "employees" )
 
 
-def importaBanco(table):
+
     cursor = db.cursor()
     cursor.execute("select * from "+table)
     data = cursor.fetchall()
