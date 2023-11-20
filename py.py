@@ -3,24 +3,22 @@ import MySQLdb
 import os
 
 
-def importaCSV(filename):
-    # Obtém o nome do arquivo sem a extensão
-    base_name = os.path.splitext(os.path.basename(filename))[0]
-
-    # Define o caminho do arquivo de saída na pasta 'db'
-    output_filename = os.path.join('db', f"{base_name}.banco")
+def importaCSV(nomeArquivo):
+    nomeArq = os.path.splitext(os.path.basename(nomeArquivo))[0] # Retorna o nome do arquivo sem a extensao
+    nomeSaida = os.path.join('data', f"{nomeArq}.banco") # Define o nome do arquivo de saida
 
     # Verifica se a pasta 'db' existe e a cria, se necessário
-    if not os.path.exists('db'):
-        os.makedirs('db')
+    if not os.path.exists('data'): # Verifica se a pasta data existe
+        os.makedirs('data')
 
-    with open(filename, 'r') as file:
+    with open(nomeArquivo, 'r') as file:
         reader = csv.reader(file)
-        with open(output_filename, 'w', newline='') as output_file:
+        with open(nomeSaida, 'w', newline='') as output_file:
             writer = csv.writer(output_file)
             for row in reader:
-                print(row)
                 writer.writerow(row)
+    print("Tabela importada com sucesso!")
+
 
 importaCSV('employees.csv')
 
