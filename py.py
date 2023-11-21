@@ -17,7 +17,7 @@ def importaCSV(nomeArquivo):
                 for row in reader:
                     writer.writerow(row)
                 print("Tabela importada com sucesso!")
-                
+
             except:
                 print("Erro ao importar a tabela!")
                 exit()
@@ -62,22 +62,7 @@ def importaBanco(nomeBanco, tabela):
             exit()
 
 
-
 importaCSV('departments.csv')
 #importaBanco('employees', 'employees')
 
-
-
-
-'''
-
-
-
-    cursor = db.cursor()
-    cursor.execute("select * from "+table)
-    data = cursor.fetchall()
-    for row in data:
-        print(row)
-    db.close()
-'''
 
