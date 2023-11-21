@@ -23,6 +23,7 @@ def importaBanco(nomeBanco, tabela):
         os.makedirs('data')
 
     nomeSaida = os.path.join('data', f"{tabela}.banco") # Define o nome do arquivo de saida
+    nomeCSV = os.path.join(f"{tabela}.csv") # Define o nome do arquivo de saida CSV
 
     db = MySQLdb.connect(
     "localhost",
@@ -33,14 +34,21 @@ def importaBanco(nomeBanco, tabela):
     cursor = db.cursor()
     cursor.execute("select * from "+tabela)
     data = cursor.fetchall()
+
+    #exporta para CSV
+    with open(nomeCSV, 'w', newline='') as csv_file:
+        csv_writer = csv.writer(csv_file)
+        for row in data:
+            csv_writer.writerow(row)
+
     for row in data:
         print(row) # Tratar o retorno dos dados para datetime
 
         
 
 
-# importaCSV('employees.csv')
-importaBanco('employees', 'employees')
+importaCSV('employees.csv')
+#importaBanco('employees', 'employees')
 
 
 
