@@ -18,37 +18,39 @@ def importaCSV(nomeArquivo):
                 writer.writerow(row)
     print("Tabela importada com sucesso!")
 
+
 def importaBanco(nomeBanco, tabela):
     if not os.path.exists('data'): # Verifica se a pasta data existe
         os.makedirs('data')
 
     nomeSaida = os.path.join('data', f"{tabela}.banco") # Define o nome do arquivo de saida
-    nomeCSV = os.path.join(f"{tabela}.csv") # Define o nome do arquivo de saida CSV
 
     db = MySQLdb.connect(
     "localhost",
     "root",
     "123",
-    "employees" )
+    nomeBanco)
 
     cursor = db.cursor()
     cursor.execute("select * from "+tabela)
+
+    campos = [i[0] for i in cursor.description] # Extrai o nome dos campos da tabela
+
     data = cursor.fetchall()
 
-    #exporta para CSV
-    with open(nomeCSV, 'w', newline='') as csv_file:
-        csv_writer = csv.writer(csv_file)
+    with open(nomeSaida, 'w', newline='') as arquivo: # Salva como arquivo .banco
+        csv_writer = csv.writer(arquivo)
+        csv_writer.writerow(campos)
+
         for row in data:
             csv_writer.writerow(row)
 
-    for row in data:
-        print(row) # Tratar o retorno dos dados para datetime
-
-        
+    print("Tabela importada com sucesso!")
 
 
-importaCSV('employees.csv')
-#importaBanco('employees', 'employees')
+
+#importaCSV('employees.csv')
+importaBanco('employees', 'employees')
 
 
 
