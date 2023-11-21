@@ -2,7 +2,6 @@ import csv
 import MySQLdb
 import os
 
-
 def importaCSV(nomeArquivo):
     if not os.path.exists('data'): # Verifica se a pasta data existe
         os.makedirs('data')
@@ -10,13 +9,18 @@ def importaCSV(nomeArquivo):
     nomeArq = os.path.splitext(os.path.basename(nomeArquivo))[0] # Retorna o nome do arquivo sem a extensao
     nomeSaida = os.path.join('data', f"{nomeArq}.banco") # Define o nome do arquivo de saida
 
-    with open(nomeArquivo, 'r') as file:
-        reader = csv.reader(file)
+    with open(nomeArquivo, 'r') as arquivo:
+        reader = csv.reader(arquivo)
         with open(nomeSaida, 'w', newline='') as output_file:
             writer = csv.writer(output_file)
-            for row in reader:
-                writer.writerow(row)
-    print("Tabela importada com sucesso!")
+            try:
+                for row in reader:
+                    writer.writerow(row)
+                print("Tabela importada com sucesso!")
+                
+            except:
+                print("Erro ao importar a tabela!")
+                exit()
 
 
 def importaBanco(nomeBanco, tabela):
@@ -25,32 +29,42 @@ def importaBanco(nomeBanco, tabela):
 
     nomeSaida = os.path.join('data', f"{tabela}.banco") # Define o nome do arquivo de saida
 
-    db = MySQLdb.connect(
-    "localhost",
-    "root",
-    "123",
-    nomeBanco)
+    try: # Tenta conectar ao banco e importar a tabela
+        db = MySQLdb.connect(
+        "localhost",
+        "root",
+        "123",
+        nomeBanco)
 
-    cursor = db.cursor()
-    cursor.execute("select * from "+tabela)
+        cursor = db.cursor()
+        cursor.execute("select * from "+tabela)
 
-    campos = [i[0] for i in cursor.description] # Extrai o nome dos campos da tabela
+        campos = [i[0] for i in cursor.description] # Extrai o nome dos campos da tabela
+        data = cursor.fetchall()
 
-    data = cursor.fetchall()
+    except: 
+        print("Erro ao importar a tabela!")
+        exit()
 
     with open(nomeSaida, 'w', newline='') as arquivo: # Salva como arquivo .banco
         csv_writer = csv.writer(arquivo)
-        csv_writer.writerow(campos)
 
-        for row in data:
-            csv_writer.writerow(row)
+        try:
+            csv_writer.writerow(campos)
 
-    print("Tabela importada com sucesso!")
+            for row in data:
+                csv_writer.writerow(row)
+
+            print("Tabela importada com sucesso!")
+
+        except:
+            print("Erro ao salvar o arquivo!")
+            exit()
 
 
 
-#importaCSV('employees.csv')
-importaBanco('employees', 'employees')
+importaCSV('departments.csv')
+#importaBanco('employees', 'employees')
 
 
 
