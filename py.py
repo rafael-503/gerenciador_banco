@@ -62,7 +62,18 @@ def importaBanco(nomeBanco, tabela):
             exit()
 
 
-importaCSV('departments.csv')
+def seleciona(tabela, *campos):
+    #arq = f"{tabela}.banco"
+    arq = os.path.join('data', f"{tabela}.banco")
+
+    if not os.path.exists(arq): # Verifica se a tabela existe
+        print("Tabela não encontrada!")
+        exit()
+    
+
+
+#importaCSV('departments.csv')
 #importaBanco('employees', 'employees')
+seleciona('employees', 'first_name', 'last_name')
 
 
