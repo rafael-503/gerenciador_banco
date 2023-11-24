@@ -10,12 +10,12 @@ def importaCSV(nomeArquivo):
     nomeSaida = os.path.join('data', f"{nomeArq}.banco") # Define o nome do arquivo de saida
 
     with open(nomeArquivo, 'r') as arquivo:
-        reader = csv.reader(arquivo)
-        with open(nomeSaida, 'w', newline='') as output_file:
-            writer = csv.writer(output_file)
+        leitor = csv.reader(arquivo)
+        with open(nomeSaida, 'w', newline='') as arqBanco:
+            writer = csv.writer(arqBanco)
             try:
-                for row in reader:
-                    writer.writerow(row)
+                for coluna in leitor:
+                    writer.writerow(coluna)
                 print("Tabela importada com sucesso!")
 
             except:
@@ -47,13 +47,13 @@ def importaBanco(nomeBanco, tabela):
         exit()
 
     with open(nomeSaida, 'w', newline='') as arquivo: # Salva como arquivo .banco
-        csv_writer = csv.writer(arquivo)
+        leitor = csv.writer(arquivo)
 
         try:
-            csv_writer.writerow(campos)
+            leitor.writerow(campos)
 
-            for row in data:
-                csv_writer.writerow(row)
+            for coluna in data:
+                leitor.writerow(coluna)
 
             print("Tabela importada com sucesso!")
 
@@ -70,10 +70,37 @@ def seleciona(tabela, *campos):
         print("Tabela não encontrada!")
         exit()
     
+    try:
+        with open(arq, 'r') as arquivo:
+            leitor = csv.DictReader(arquivo)
+
+            # Verifica se todos os campos existem na tabela
+            campos_inexistentes = [campo for campo in campos if campo not in leitor.fieldnames]
+            if campos_inexistentes:
+                print(f"O campo {', '.join(campos_inexistentes)} não existe na tabela '{tabela}'.")
+                exit()
+
+            # Cria uma lista para armazenar os valores dos campos escolhidos
+            dados = [[] for _ in range(len(campos))]
+            
+            for linha in leitor:
+                for i, campo in enumerate(campos):
+                    dados[i].append(linha[campo])
+
+            print(' '.join(campos)) # Imprime os nomes dos campos
+
+            for linha in zip(*dados): # Imprime o conteudo dos campos
+                print(' '.join(map(str, linha)))
+
+            return dados
+
+    except:
+        print("Erro ao abrir a tabela!")
+        exit()
 
 
 #importaCSV('departments.csv')
-#importaBanco('employees', 'employees')
-seleciona('employees', 'first_name', 'last_name')
+importaBanco('dept_emp', 'employees')
+#seleciona('employees', 'last_name', 'first_name', 'emp_no')
 
 
