@@ -100,7 +100,7 @@ def seleciona(tabela, *campos):
 
 
 #importaCSV('departments.csv')
-importaBanco('dept_emp', 'employees')
+importaBanco('employees', 'dept_emp')
 #seleciona('employees', 'last_name', 'first_name', 'emp_no')
 
 
