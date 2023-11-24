@@ -74,6 +74,9 @@ def seleciona(tabela, *campos):
         with open(arq, 'r') as arquivo:
             leitor = csv.DictReader(arquivo)
 
+            if "*" in campos: # Seleciona todos os campos
+                campos = leitor.fieldnames
+            
             # Verifica se todos os campos existem na tabela
             campos_inexistentes = [campo for campo in campos if campo not in leitor.fieldnames]
             if campos_inexistentes:
@@ -100,7 +103,7 @@ def seleciona(tabela, *campos):
 
 
 #importaCSV('departments.csv')
-importaBanco('employees', 'dept_emp')
-#seleciona('employees', 'last_name', 'first_name', 'emp_no')
+#importaBanco('employees', 'dept_emp')
+seleciona('employees', '*')
 
 
