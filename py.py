@@ -63,47 +63,60 @@ def importaBanco(nomeBanco, tabela):
 
 
 def seleciona(tabela, *campos):
-    #arq = f"{tabela}.banco"
     arq = os.path.join('data', f"{tabela}.banco")
 
-    if not os.path.exists(arq): # Verifica se a tabela existe
+    if not os.path.exists(arq):  # Verifica se a tabela existe
         print("Tabela não encontrada!")
         exit()
-    
+
     try:
         with open(arq, 'r') as arquivo:
             leitor = csv.DictReader(arquivo)
 
-            if "*" in campos: # Seleciona todos os campos
+            if "*" in campos:  # Seleciona todos os campos
                 campos = leitor.fieldnames
-            
-            # Verifica se todos os campos existem na tabela
-            campos_inexistentes = [campo for campo in campos if campo not in leitor.fieldnames]
-            if campos_inexistentes:
-                print(f"O campo {', '.join(campos_inexistentes)} não existe na tabela '{tabela}'.")
-                exit()
 
             # Cria uma lista para armazenar os valores dos campos escolhidos
-            dados = [[] for _ in range(len(campos))]
-            
+            dados = {campo: [] for campo in campos}
+
             for linha in leitor:
-                for i, campo in enumerate(campos):
-                    dados[i].append(linha[campo])
-
-            print(' '.join(campos)) # Imprime os nomes dos campos
-
-            for linha in zip(*dados): # Imprime o conteudo dos campos
-                print(' '.join(map(str, linha)))
+                for campo in campos:
+                    dados[campo].append(linha[campo])
 
             return dados
 
-    except:
-        print("Erro ao abrir a tabela!")
+    except Exception as e:
+        print(f"Erro ao abrir a tabela: {e}")
         exit()
+
+
+def onde(dados, campo, valor):
+    campos_minusculos = [nome.lower() for nome in dados.keys()]
+    
+    if campo.lower() not in campos_minusculos:
+        print(f"Campo '{campo}' não encontrado na tabela.")
+        return []
+
+    indice = campos_minusculos.index(campo.lower())
+
+    linhas = [linha for linha in zip(*dados.values()) if linha[indice] == valor]
+
+    if not linhas:
+        print(f"Nenhuma linha encontrada onde '{campo}' é igual a '{valor}'.")
+        return []
+
+    # Transpõe as linhas filtradas de volta para o formato original
+    valores = {campo: list(coluna) for campo, coluna in zip(dados.keys(), zip(*linhas))}
+
+    print(' '.join(dados.keys()))
+
+    for linha in zip(*valores.values()):
+        print(' '.join(map(str, linha)))
+
+    return valores
 
 
 #importaCSV('departments.csv')
 #importaBanco('employees', 'dept_emp')
-seleciona('employees', '*')
-
-
+dados = seleciona('employees', 'first_name', 'last_name')
+resultado = onde(dados, 'first_name', 'Georgi')
