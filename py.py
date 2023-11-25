@@ -73,10 +73,15 @@ def seleciona(tabela, *campos):
         with open(arq, 'r') as arquivo:
             leitor = csv.DictReader(arquivo)
 
-            if "*" in campos:  # Seleciona todos os campos
+            if "*" in campos: # Seleciona todos os campos
                 campos = leitor.fieldnames
 
-            # Cria uma lista para armazenar os valores dos campos escolhidos
+            campos_inexistentes = [campo for campo in campos if campo not in leitor.fieldnames] # Verifica se os campos existem na tabela
+            if campos_inexistentes: 
+                print(f"O campo {', '.join(campos_inexistentes)} não existe na tabela '{tabela}'.")
+                exit()
+
+            # Cria um dicionario para armazenar os valores dos campos escolhidos
             dados = {campo: [] for campo in campos}
 
             for linha in leitor:
@@ -85,21 +90,20 @@ def seleciona(tabela, *campos):
 
             return dados
 
-    except Exception as e:
-        print(f"Erro ao abrir a tabela: {e}")
+    except:
+        print("Erro ao abrir a tabela:")
         exit()
 
 
 def onde(dados, campo, valor):
-    campos_minusculos = [nome.lower() for nome in dados.keys()]
-    
-    if campo.lower() not in campos_minusculos:
+    try:
+        indice = list(dados.keys()).index(campo) # Verifica se o campo existe na tabela
+
+    except:
         print(f"Campo '{campo}' não encontrado na tabela.")
         return []
-
-    indice = campos_minusculos.index(campo.lower())
-
-    linhas = [linha for linha in zip(*dados.values()) if linha[indice] == valor]
+    
+    linhas = [linha for linha in zip(*dados.values()) if linha[indice] == valor] # Filtra as linhas onde o campo é igual ao valor
 
     if not linhas:
         print(f"Nenhuma linha encontrada onde '{campo}' é igual a '{valor}'.")
@@ -108,9 +112,9 @@ def onde(dados, campo, valor):
     # Transpõe as linhas filtradas de volta para o formato original
     valores = {campo: list(coluna) for campo, coluna in zip(dados.keys(), zip(*linhas))}
 
-    print(' '.join(dados.keys()))
+    print(' '.join(dados.keys())) # Imprime o nome dos campos
 
-    for linha in zip(*valores.values()):
+    for linha in zip(*valores.values()): 
         print(' '.join(map(str, linha)))
 
     return valores
