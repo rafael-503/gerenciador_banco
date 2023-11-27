@@ -62,6 +62,30 @@ def importaBanco(nomeBanco, tabela):
             exit()
 
 
+def insere(tabela, **dados):
+    arq = os.path.join('data', f"{tabela}.banco") 
+    if not os.path.exists(arq): # Verifica se a tabela existe
+        print(f"Tabela '{tabela}' não encontrada.")
+        exit()
+
+    try:
+        with open(arq, 'a', newline='') as arquivo:
+            leitor = csv.DictWriter(arquivo, fieldnames=dados.keys())
+
+            # Verifica se os campos existem na tabela
+            if not all(campo in leitor.fieldnames for campo in dados.keys()):
+                print("Campo inexistente.")
+                exit()
+
+            leitor.writerow(dados) # Insere os dados no arquivo
+
+        print("Dados inseridos com sucesso.")
+
+    except:
+        print("Erro ao inserir os dados na tabela.")
+        exit()
+
+
 def seleciona(tabela, *campos):
     arq = os.path.join('data', f"{tabela}.banco")
 
@@ -122,5 +146,6 @@ def onde(dados, campo, valor):
 
 #importaCSV('departments.csv')
 #importaBanco('employees', 'dept_emp')
-dados = seleciona('employees', 'first_name', 'last_name')
-resultado = onde(dados, 'first_name', 'Georgi')
+#dados = seleciona('employees', 'first_name', 'last_name')
+#resultado = onde(dados, 'first_name', 'Georgi')
+insere('employees', emp_no=10011, birth_date='1953-11-07', first_name='Mary', last_name='Sluis', gender='F', hire_date='1990-01-22')
