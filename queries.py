@@ -86,6 +86,37 @@ def insere(tabela, **dados):
         exit()
 
 
+def deleta(tabela, campo, valor):
+    arq = os.path.join('data', f"{tabela}.banco")
+
+    if not os.path.exists(arq): # Verifica se a tabela existe
+        print(f"Tabela '{tabela}' não encontrada.")
+        exit()
+
+    try:
+        with open(arq, 'r') as arquivo: # Le os dados da tabela
+            leitor = csv.DictReader(arquivo)
+            dados = list(leitor);
+        
+        if not any(linha[campo] == valor for linha in dados): # Verifica se os dados informados existem na tabela
+            print("Dados não encontrados.")
+            exit()
+            
+        with open(arq, 'w', newline='') as arquivo: # Escreve os dados na tabela sem a linha deletada
+            escritor = csv.DictWriter(arquivo, fieldnames=leitor.fieldnames)
+            escritor.writeheader()
+
+            for linha in dados:
+                if linha[campo] != valor:
+                    escritor.writerow(linha)
+
+        print("Dados deletados com sucesso.")
+
+    except:
+        print("Erro ao deletar os dados da tabela.")
+        exit()
+
+
 def seleciona(tabela, *campos):
     arq = os.path.join('data', f"{tabela}.banco")
 
@@ -148,4 +179,5 @@ def onde(dados, campo, valor):
 #importaBanco('employees', 'dept_emp')
 #dados = seleciona('employees', 'first_name', 'last_name')
 #resultado = onde(dados, 'first_name', 'Georgi')
-insere('employees', emp_no=10011, birth_date='1953-11-07', first_name='Mary', last_name='Sluis', gender='F', hire_date='1990-01-22')
+#insere('employees', emp_no=10011, birth_date='1953-11-07', first_name='Mary', last_name='Sluis', gender='F', hire_date='1990-01-22')
+deleta('employees', 'emp_no', '1002')
