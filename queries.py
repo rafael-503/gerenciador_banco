@@ -117,6 +117,33 @@ def deleta(tabela, campo, valor):
         exit()
 
 
+def atualiza(tabela, campo, valor, **dados):
+    arq = os.path.join('data', f"{tabela}.banco")
+
+    if not os.path.exists(arq): # Verifica se a tabela existe
+        print(f"Tabela '{tabela}' não encontrada.")
+        exit()
+
+    try:
+        with open(arq, 'r') as arquivo: # Le os dados da tabela
+            leitor = csv.DictReader(arquivo)
+            registros = list(leitor)
+    
+        with open(arq, 'w', newline='') as arquivo:
+            campos = leitor.fieldnames # Define os campos que serão escritos no arquivo
+            escritor = csv.DictWriter(arquivo, fieldnames=campos)
+            escritor.writeheader()
+
+            for registro in registros:
+                if registro[campo] == valor:
+                    registro.update(**dados) # Atualiza os valores no campo correspondente
+                escritor.writerow(registro)   
+
+    except:
+        print("Erro ao atualizar os dados da tabela.")
+        exit()
+
+
 def seleciona(tabela, *campos):
     arq = os.path.join('data', f"{tabela}.banco")
 
@@ -180,4 +207,5 @@ def onde(dados, campo, valor):
 #dados = seleciona('employees', 'first_name', 'last_name')
 #resultado = onde(dados, 'first_name', 'Georgi')
 #insere('employees', emp_no=10011, birth_date='1953-11-07', first_name='Mary', last_name='Sluis', gender='F', hire_date='1990-01-22')
-deleta('employees', 'emp_no', '1002')
+#deleta('employees', 'emp_no', '1002')
+#atualiza('employees', 'emp_no', '10001', first_name='George', last_name='NULL', )
