@@ -21,10 +21,10 @@ def importaCSV(nomeArquivo):
 
                 except:
                     print("Erro ao importar a tabela!")
-                    exit()
+                    return 
     else:
         print("Arquivo não encontrado!")
-        exit()
+        return 
 
 
 def importaBanco(nomeBanco, tabela):
@@ -71,7 +71,7 @@ def insere(tabela, **dados):
     arq = os.path.join('data', f"{tabela}.banco") 
     if not os.path.exists(arq): # Verifica se a tabela existe
         print(f"Tabela '{tabela}' não encontrada.")
-        exit()
+        return 
 
     try:
         with open(arq, 'a', newline='') as arquivo:
@@ -80,7 +80,7 @@ def insere(tabela, **dados):
             # Verifica se os campos existem na tabela
             if not all(campo in leitor.fieldnames for campo in dados.keys()):
                 print("Campo inexistente.")
-                exit()
+                return 
 
             leitor.writerow(dados) # Insere os dados no arquivo
 
@@ -88,7 +88,7 @@ def insere(tabela, **dados):
 
     except:
         print("Erro ao inserir os dados na tabela.")
-        exit()
+        return 
 
 
 def deleta(tabela, campo, valor):
@@ -96,7 +96,7 @@ def deleta(tabela, campo, valor):
 
     if not os.path.exists(arq): # Verifica se a tabela existe
         print(f"Tabela '{tabela}' não encontrada.")
-        exit()
+        return 
 
     try:
         with open(arq, 'r') as arquivo: # Le os dados da tabela
@@ -105,7 +105,7 @@ def deleta(tabela, campo, valor):
         
         if not any(linha[campo] == valor for linha in dados): # Verifica se os dados informados existem na tabela
             print("Dados não encontrados.")
-            exit()
+            return 
             
         with open(arq, 'w', newline='') as arquivo: # Escreve os dados na tabela sem a linha deletada
             escritor = csv.DictWriter(arquivo, fieldnames=leitor.fieldnames)
@@ -119,7 +119,7 @@ def deleta(tabela, campo, valor):
 
     except:
         print("Erro ao deletar os dados da tabela.")
-        exit()
+        return 
 
 
 def atualiza(tabela, campo, valor, **dados):
@@ -127,7 +127,7 @@ def atualiza(tabela, campo, valor, **dados):
 
     if not os.path.exists(arq): # Verifica se a tabela existe
         print(f"Tabela '{tabela}' não encontrada.")
-        exit()
+        return 
 
     try:
         with open(arq, 'r') as arquivo: # Le os dados da tabela
@@ -146,7 +146,7 @@ def atualiza(tabela, campo, valor, **dados):
 
     except:
         print("Erro ao atualizar os dados da tabela.")
-        exit()
+        return 
 
 
 def seleciona(tabela, *campos):
@@ -154,7 +154,7 @@ def seleciona(tabela, *campos):
 
     if not os.path.exists(arq):  # Verifica se a tabela existe
         print("Tabela não encontrada!")
-        exit()
+        return 
 
     try:
         with open(arq, 'r') as arquivo:
@@ -166,7 +166,7 @@ def seleciona(tabela, *campos):
             campos_inexistentes = [campo for campo in campos if campo not in leitor.fieldnames] # Verifica se os campos existem na tabela
             if campos_inexistentes: 
                 print(f"O campo {', '.join(campos_inexistentes)} não existe na tabela '{tabela}'.")
-                exit()
+                return 
 
             # Cria um dicionario para armazenar os valores dos campos escolhidos
             dados = {campo: [] for campo in campos}
@@ -179,7 +179,7 @@ def seleciona(tabela, *campos):
 
     except:
         print("Erro ao abrir a tabela:")
-        exit()
+        return 
 
 
 def onde(dados, campo, valor):
