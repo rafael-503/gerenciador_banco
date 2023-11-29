@@ -10,5 +10,5 @@ def main():
         interpreta(entrada)
 
 if __name__ == "__main__":
-    print('Digite um comando ou "sair" para sair\n')
+    print('Digite um comando ou "sair" para sair')
     main()
