@@ -8,19 +8,23 @@ def importaCSV(nomeArquivo):
 
     nomeArq = os.path.splitext(os.path.basename(nomeArquivo))[0] # Retorna o nome do arquivo sem a extensao
     nomeSaida = os.path.join('data', f"{nomeArq}.banco") # Define o nome do arquivo de saida
+   
+    if os.path.exists(nomeArquivo): # Verifica se o arquivo existe
+        with open(nomeArquivo, 'r') as arquivo:
+            leitor = csv.reader(arquivo)
+            with open(nomeSaida, 'w', newline='') as arqBanco:
+                writer = csv.writer(arqBanco)
+                try:
+                    for coluna in leitor:
+                        writer.writerow(coluna)
+                    print("Tabela importada com sucesso!")
 
-    with open(nomeArquivo, 'r') as arquivo:
-        leitor = csv.reader(arquivo)
-        with open(nomeSaida, 'w', newline='') as arqBanco:
-            writer = csv.writer(arqBanco)
-            try:
-                for coluna in leitor:
-                    writer.writerow(coluna)
-                print("Tabela importada com sucesso!")
-
-            except:
-                print("Erro ao importar a tabela!")
-                exit()
+                except:
+                    print("Erro ao importar a tabela!")
+                    exit()
+    else:
+        print("Arquivo não encontrado!")
+        exit()
 
 
 def importaBanco(nomeBanco, tabela):
