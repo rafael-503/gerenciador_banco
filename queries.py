@@ -48,7 +48,7 @@ def importaBanco(nomeBanco, tabela):
 
     except: 
         print("Erro ao importar a tabela!")
-        exit()
+        return
 
     with open(nomeSaida, 'w', newline='') as arquivo: # Salva como arquivo .banco
         leitor = csv.writer(arquivo)
@@ -60,10 +60,11 @@ def importaBanco(nomeBanco, tabela):
                 leitor.writerow(coluna)
 
             print("Tabela importada com sucesso!")
+            return
 
         except:
             print("Erro ao salvar o arquivo!")
-            exit()
+            return
 
 
 def insere(tabela, **dados):

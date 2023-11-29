@@ -12,13 +12,15 @@ def interpreta(comando):
     re_importa_csv = padrao_importa_csv.match(comando)
     re_importa_banco = padrao_importa_banco.match(comando)
 
-    if re_importa_csv:
-        nome = re_importa_csv.group(1)
-        tabela = nome + ".csv"
-        importaCSV(tabela)
-
-    elif re_importa_banco:
+    if re_importa_banco:
         tabela = re_importa_banco.group(1)
         banco = re_importa_banco.group(2)
         importaBanco(banco, tabela)
-
+        
+    elif re_importa_csv:
+        nome = re_importa_csv.group(1)
+        tabela = nome + ".csv"
+        importaCSV(tabela)
+    
+    else:
+        print("Comando invalido!")
