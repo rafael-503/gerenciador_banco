@@ -1,9 +1,13 @@
 from interpreta import *
 
-while True:
-    entrada = input("Digite um comando: ou 'sair' para sair\n")
+def main():
+    while True:
+        entrada = input("Digite um comando: ou 'sair' para sair\n")
 
-    if entrada == "sair":
-        break
+        if entrada == "sair":
+            break
 
-    interpreta(entrada)
+        interpreta(entrada)
+
+if __name__ == "__main__":
+    main()
