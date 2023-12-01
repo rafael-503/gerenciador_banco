@@ -42,4 +42,5 @@ junta - realiza junção de tabelas para combinar dados relacionados.
 
 ``atualiza <tabela> para campo1=valor1, campo2=valor2, ... onde campo=valor`` → atualiza os dados em uma tabela conforme uma condição (campo=valor)
 
-``deleta de <tabela> onde campo=valor`` → remove os dados em uma tabela conforme uma condição específica
+``deleta de <tabela> onde campo=valor`` → remove os dados em uma tabela conforme uma condição específica funciona para os operadores >, >=, <, <= e =
+
