@@ -2,7 +2,9 @@ import csv
 import MySQLdb
 import os
 
-def importaCSV(nomeArquivo):
+from imprime import *
+
+def importaCSV(nomeArquivo): #cria um .banco a partir de um CSV local
     if not os.path.exists('data'): # Verifica se a pasta data existe
         os.makedirs('data')
 
@@ -27,7 +29,7 @@ def importaCSV(nomeArquivo):
         return 
 
 
-def importaBanco(nomeBanco, tabela):
+def importaBanco(nomeBanco, tabela): #cria um .banco a partir do servidor MySQL
     if not os.path.exists('data'): # Verifica se a pasta data existe
         os.makedirs('data')
 
@@ -199,18 +201,53 @@ def onde(dados, campo, valor):
     # Transpõe as linhas filtradas de volta para o formato original
     valores = {campo: list(coluna) for campo, coluna in zip(dados.keys(), zip(*linhas))}
 
-    print(' '.join(dados.keys())) # Imprime o nome dos campos
+    #print(' '.join(dados.keys())) # Imprime o nome dos campos
 
-    for linha in zip(*valores.values()): 
-        print(' '.join(map(str, linha)))
+    #for linha in zip(*valores.values()): 
+    #    print(' '.join(map(str, linha)))
 
     return valores
 
+def eAinda(dados, *clausulas):
+    resultado = dados
+    
+    for clausula in clausulas:
+        campo, operador, valor = clausula
+        resultado = onde(resultado, campo, valor)
+    
+    return resultado
+ 
 
-#importaCSV('departments.csv')
-#importaBanco('employees', 'dept_emp')
-#dados = seleciona('employees', 'first_name', 'last_name')
-#resultado = onde(dados, 'first_name', 'Georgi')
+def ordenaPor(dados, campo):
+    if campo not in dados:
+        print(f"Campo '{campo}' não encontrado nos dados.")
+        return None
+
+    # Converte as chaves para uma lista
+    chaves = list(dados.keys())
+
+    # Obtém o índice do campo de ordenação
+    indice_order_by = chaves.index(campo)
+
+    # Obtém os dados ordenados
+    dados_ordenados = sorted(zip(*dados.values()), key=lambda x: x[indice_order_by])
+
+    # Transpõe os dados ordenados de volta para o formato original
+    dados_ordenados = {campo: list(coluna) for campo, coluna in zip(chaves, zip(*dados_ordenados))}
+
+    return dados_ordenados
+
+
+#importaCSV('employees.csv') # importa do .csv
+#importaBanco('employees', 'employees') # importa do servidor MYSQL direto
+selectFunc = seleciona('employees', 'first_name', 'last_name', 'gender')
+whereFunc = onde(selectFunc, 'first_name', 'Parto')
+andFunc = eAinda(whereFunc, ('gender', '=', 'M'),('last_name', '=', 'Baek')) 
+#dados_ordenados = ordenaPor(whereFunc, 'last_name')
+
+imprimeFunc(andFunc)
+
+
 #insere('employees', emp_no=10011, birth_date='1953-11-07', first_name='Mary', last_name='Sluis', gender='F', hire_date='1990-01-22')
 #deleta('employees', 'emp_no', '1002')
 #atualiza('employees', 'emp_no', '10001', first_name='George', last_name='NULL', )
