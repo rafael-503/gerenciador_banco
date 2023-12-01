@@ -124,6 +124,46 @@ def deleta(tabela, campo, valor):
         return 
 
 
+def deletaCondicao(tabela, campo, condicao, valor):
+    arq = os.path.join('data', f"{tabela}.banco")
+
+    if not os.path.exists(arq):
+        print(f"Tabela '{tabela}' não encontrada.")
+        return
+
+    operadores = ['>', '>=', '<', '<=']
+
+    if condicao not in operadores:
+        print("Operador inválido.")
+        return
+
+    try:
+        with open(arq, 'r') as arquivo: # Le os dados da tabela
+            leitor = csv.DictReader(arquivo)
+            dados = list(leitor)
+
+        deletado = False
+
+        with open(arq, 'w', newline='') as arquivo: 
+            escritor = csv.DictWriter(arquivo, fieldnames=leitor.fieldnames)
+            escritor.writeheader()
+ 
+            for linha in dados: 
+                if eval(f"str(linha[campo]) {condicao} str(valor)"):
+                    deletado = True
+                else:
+                    escritor.writerow(linha)
+
+        if deletado:
+            print("Dados deletados com sucesso.")
+        else:
+            print("Valor incorreto dados não encontrados.")
+
+    except:
+        print("Erro ao deletar os dados da tabela!")
+        return 
+
+
 def atualiza(tabela, campo, valor, **dados):
     arq = os.path.join('data', f"{tabela}.banco")
 
@@ -251,3 +291,5 @@ def ordenaPor(dados, campo):
 #insere('employees', emp_no=10011, birth_date='1953-11-07', first_name='Mary', last_name='Sluis', gender='F', hire_date='1990-01-22')
 #deleta('employees', 'emp_no', '1002')
 #atualiza('employees', 'emp_no', '10001', first_name='George', last_name='NULL', )
+
+#deletaCondicao('employees', 'emp_no', '>', '10005')

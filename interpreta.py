@@ -10,7 +10,7 @@ def interpreta(comando):
     padrao_importa_banco = re.compile(r'^importa ([a-zA-Z_]+) de ([a-zA-Z_]+)$') # importa <tabela> de <banco> chama a função importaBanco
     padrao_insere = re.compile(r'insere\s+em\s+([a-zA-Z_]+)\s*\(\s*([^)]+)\)\s*valores\s*\(\s*([^)]+)\)')
     padrao_atualiza = re.compile(r'atualiza\s+([a-zA-Z_]+)\s+para\s+((?:[a-zA-Z_]+\s*=\s*\S+\s*,\s*)*[a-zA-Z_]+\s*=\s*\S+)\s+onde\s+([a-zA-Z_]+)\s*=\s*(\S+)\s*$')
-    padrao_deleta = re.compile(r'deleta de ([a-zA-Z_]+) onde ([a-zA-Z_]+)\s*=\s*(.+)')
+    padrao_deleta = re.compile(r'deleta\s+de\s+([a-zA-Z_]+)\s+onde\s+([a-zA-Z_]+)\s*([><=]+)\s*([\w\d]+)')
 
     re_importa_csv = padrao_importa_csv.match(comando)
     re_importa_banco = padrao_importa_banco.match(comando)
@@ -57,9 +57,13 @@ def interpreta(comando):
     elif re_deleta:
         tabela = re_deleta.group(1)
         campo = re_deleta.group(2)
-        valor = re_deleta.group(3)
-
-        deleta(tabela, campo, valor)
+        condicao = re_deleta.group(3)
+        valor = re_deleta.group(4)
+        
+        if condicao == "=":
+            deleta(tabela, campo, valor)
+        else:
+            deletaCondicao(tabela, campo, condicao,valor)
 
 
     else:
