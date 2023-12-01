@@ -34,6 +34,8 @@ em - alternativa ao usando para especificar campos para junção de tabelas.
 junta - realiza junção de tabelas para combinar dados relacionados.
 
 ## Exemplos de uso:
-``importa <tabela>`` → chama a funcao importaCSV
+``importa <tabela>`` → importa dados de uma tabela csv, chama a função importaCSV
 
-``importa <tabela> de <banco>`` → chama a função importaBanco
+``importa <tabela> de <banco>`` → importa dados de uma tabela a partir de um banco de dados MySQL existente, chama a função importaBanco
+
+``insere em <tabela> (campo1, campo2, ...) valores (valor1, valor2, ...)`` → insere dados em uma tabela, chama a funcao insere
