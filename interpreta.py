@@ -9,14 +9,14 @@ def interpreta(comando):
     padrao_importa_csv = re.compile(r"importa\s+([a-zA-Z_]+)") # importa <tabela> chama a função importaCSV
     padrao_importa_banco = re.compile(r'^importa ([a-zA-Z_]+) de ([a-zA-Z_]+)$') # importa <tabela> de <banco> chama a função importaBanco
     padrao_insere = re.compile(r'insere\s+em\s+([a-zA-Z_]+)\s*\(\s*([^)]+)\)\s*valores\s*\(\s*([^)]+)\)')
-    #padrao_atualiza = re.compile(r'^atualiza\s+([a-zA-Z_]+)\s+para\s+(\(.*\)|[\w\d_]+(?:\s*,\s*[\w\d_]+)*)\s*=\s*(\(.*\)|[\w\d]+(?:\s*,\s*[\w\d]+)*)\s+onde\s+([\w\d_]+)\s*=\s*([\w\d]+)$')
-    #padrao_atualiza = re.compile(r'^atualiza\s+([a-zA-Z_]+)\s+para\s+([\w\d_]+\s*=\s*[\w\d_]+(?:\s*,\s*[\w\d_]+\s*=\s*[\w\d_]+)*)\s*onde\s+([\w\d_]+)\s*=\s*([\w\d]+)$')
     padrao_atualiza = re.compile(r'atualiza\s+([a-zA-Z_]+)\s+para\s+((?:[a-zA-Z_]+\s*=\s*\S+\s*,\s*)*[a-zA-Z_]+\s*=\s*\S+)\s+onde\s+([a-zA-Z_]+)\s*=\s*(\S+)\s*$')
+    padrao_deleta = re.compile(r'deleta de ([a-zA-Z_]+) onde ([a-zA-Z_]+)\s*=\s*(.+)')
 
     re_importa_csv = padrao_importa_csv.match(comando)
     re_importa_banco = padrao_importa_banco.match(comando)
     re_insere = padrao_insere.match(comando)
     re_atualiza = padrao_atualiza.match(comando)
+    re_deleta = padrao_deleta.match(comando)
 
     if re_importa_banco:
         tabela = re_importa_banco.group(1)
@@ -53,6 +53,14 @@ def interpreta(comando):
             dados[campo.strip()] = valor.strip()
 
         atualiza(tabela, campof, valorf, **dados)
+
+    elif re_deleta:
+        tabela = re_deleta.group(1)
+        campo = re_deleta.group(2)
+        valor = re_deleta.group(3)
+
+        deleta(tabela, campo, valor)
+
 
     else:
         print("Comando invalido!")
