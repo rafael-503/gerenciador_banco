@@ -11,7 +11,7 @@ def interpreta(comando):
     padrao_insere = re.compile(r'insere\s+em\s+([a-zA-Z_]+)\s*\(\s*([^)]+)\)\s*valores\s*\(\s*([^)]+)\)')
     #padrao_atualiza = re.compile(r'^atualiza\s+([a-zA-Z_]+)\s+para\s+(\(.*\)|[\w\d_]+(?:\s*,\s*[\w\d_]+)*)\s*=\s*(\(.*\)|[\w\d]+(?:\s*,\s*[\w\d]+)*)\s+onde\s+([\w\d_]+)\s*=\s*([\w\d]+)$')
     #padrao_atualiza = re.compile(r'^atualiza\s+([a-zA-Z_]+)\s+para\s+([\w\d_]+\s*=\s*[\w\d_]+(?:\s*,\s*[\w\d_]+\s*=\s*[\w\d_]+)*)\s*onde\s+([\w\d_]+)\s*=\s*([\w\d]+)$')
-    padrao_atualiza = re.compile(r'atualiza\s+([a-zA-Z_]+)\s+para\s+([a-zA-Z_,\s]+)=(.+)\s+onde\s+([a-zA-Z_]+)=(.+)')
+    padrao_atualiza = re.compile(r'atualiza\s+([a-zA-Z_]+)\s+para\s+((?:[a-zA-Z_]+\s*=\s*\S+\s*,\s*)*[a-zA-Z_]+\s*=\s*\S+)\s+onde\s+([a-zA-Z_]+)\s*=\s*(\S+)\s*$')
 
     re_importa_csv = padrao_importa_csv.match(comando)
     re_importa_banco = padrao_importa_banco.match(comando)
@@ -42,21 +42,17 @@ def interpreta(comando):
     elif re_atualiza:
         tabela = re_atualiza.group(1)
         campos_valores = re_atualiza.group(2)
-        onde = re_atualiza.group(3)
+        campof = re_atualiza.group(3)
+        valorf = re_atualiza.group(4)
 
-        # Tratamento para remover parênteses extras e dividir campos e valores
-        campos_valores = re.sub(r'\(|\)', '', campos_valores).split(',')
-        
+        campos_valores = re.sub(r'\(|\)', '', campos_valores).split(',') # Tratamento da string para remover parênteses extras e dividir campos e valores
+
         dados = {}
         for par in campos_valores:
             campo, valor = par.split('=')
             dados[campo.strip()] = valor.strip()
 
-        # Tratamento para dividir o campo e valor da cláusula "onde"
-        campo, valor = onde.split('=')
-
-        atualiza(tabela, campo.strip(), valor.strip(), **dados)
-
+        atualiza(tabela, campof, valorf, **dados)
 
     else:
         print("Comando invalido!")

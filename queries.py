@@ -240,12 +240,12 @@ def ordenaPor(dados, campo):
 
 #importaCSV('employees.csv') # importa do .csv
 #importaBanco('employees', 'employees') # importa do servidor MYSQL direto
-selectFunc = seleciona('employees', 'first_name', 'last_name', 'gender')
-whereFunc = onde(selectFunc, 'first_name', 'Parto')
-andFunc = eAinda(whereFunc, ('gender', '=', 'M'),('last_name', '=', 'Baek')) 
+#selectFunc = seleciona('employees', 'first_name', 'last_name', 'gender')
+#whereFunc = onde(selectFunc, 'first_name', 'Parto')
+#andFunc = eAinda(whereFunc, ('gender', '=', 'M'),('last_name', '=', 'Baek')) 
 #dados_ordenados = ordenaPor(whereFunc, 'last_name')
 
-imprimeFunc(andFunc)
+#imprimeFunc(andFunc)
 
 
 #insere('employees', emp_no=10011, birth_date='1953-11-07', first_name='Mary', last_name='Sluis', gender='F', hire_date='1990-01-22')
