@@ -1,4 +1,4 @@
-"""from interpreta import *
+from interpreta import *
 
 def main():
     while True:
@@ -12,4 +12,3 @@ def main():
 if __name__ == "__main__":
     print('Digite um comando ou "sair" para sair')
     main()
-"""
