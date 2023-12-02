@@ -258,7 +258,7 @@ def eAinda(dados, *clausulas):
     return resultado
  
 
-def ordenaPor(dados, campo):
+def ordenaPor(dados, campo, ordem='asc'):
     if campo not in dados:
         print(f"Campo '{campo}' não encontrado nos dados.")
         return None
@@ -267,10 +267,10 @@ def ordenaPor(dados, campo):
     chaves = list(dados.keys())
 
     # Obtém o índice do campo de ordenação
-    indice_order_by = chaves.index(campo)
+    indice_ordena_por = chaves.index(campo)
 
     # Obtém os dados ordenados
-    dados_ordenados = sorted(zip(*dados.values()), key=lambda x: x[indice_order_by])
+    dados_ordenados = sorted(zip(*dados.values()), key=lambda x: x[indice_ordena_por], reverse=ordem == 'desc')
 
     # Transpõe os dados ordenados de volta para o formato original
     dados_ordenados = {campo: list(coluna) for campo, coluna in zip(chaves, zip(*dados_ordenados))}
