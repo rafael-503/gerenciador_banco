@@ -250,7 +250,7 @@ def onde(dados, campo, condicao, valor):
         print(f"Campo '{campo}' não encontrado na tabela.")
         return []
 
-    operadores = ['>', '>=', '<', '<=']
+    operadores = ['>', '>=', '<', '<=', '=']
 
     if condicao not in operadores:
         print("Operador inválido.")
@@ -260,7 +260,8 @@ def onde(dados, campo, condicao, valor):
         '>': lambda x, y: x > y,
         '>=': lambda x, y: x >= y,
         '<': lambda x, y: x < y,
-        '<=': lambda x, y: x <= y
+        '<=': lambda x, y: x <= y,
+        '=': lambda x, y: x == y
     }
 
     linhas = [linha for linha in zip(*dados.values()) if comparacoes[condicao](linha[indice], valor)]
