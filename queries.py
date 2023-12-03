@@ -48,26 +48,18 @@ def importaBanco(nomeBanco, tabela): #cria um .banco a partir do servidor MySQL
         campos = [i[0] for i in cursor.description] # Extrai o nome dos campos da tabela
         data = cursor.fetchall()
 
+        with open(nomeSaida, 'w', newline='') as arquivo: # Salva como arquivo .banco
+            leitor = csv.writer(arquivo)
+            leitor.writerow(campos)
+            for coluna in data:
+                leitor.writerow(coluna)
+       
     except: 
         print("Erro ao importar a tabela!")
         return
-
-    with open(nomeSaida, 'w', newline='') as arquivo: # Salva como arquivo .banco
-        leitor = csv.writer(arquivo)
-
-        try:
-            leitor.writerow(campos)
-
-            for coluna in data:
-                leitor.writerow(coluna)
-
-            print("Tabela importada com sucesso!")
-            return
-
-        except:
-            print("Erro ao salvar o arquivo!")
-            return
-
+    
+    print("Tabela importada com sucesso!")
+    return
 
 def insere(tabela, **dados):
     arq = os.path.join('data', f"{tabela}.banco") 
@@ -92,6 +84,21 @@ def insere(tabela, **dados):
         print("Erro ao inserir os dados na tabela.")
         return 
 
+def deletaTabela(tabela):
+    arq = os.path.join('data', f"{tabela}.banco")
+
+    if not os.path.exists(arq): # Verifica se a tabela existe
+        print("Tabela não encontrada.")
+        return 
+
+    try:
+        os.remove(arq) # Deleta a tabela
+        print("Tabela deletada com sucesso.")
+
+    except:
+        print("Erro ao deletar a tabela.")
+        return
+    
 
 def deleta(tabela, campo, valor):
     arq = os.path.join('data', f"{tabela}.banco")
@@ -434,14 +441,14 @@ def juntaComCondicao(tabela1, tabela2, colunaComum, coluna, operador, valor):
 
 #importaCSV('employees.csv') # importa do .csv
 #importaBanco('employees', 'employees') # importa do servidor MYSQL direto
-selectFunc = seleciona2('employees','emp_no', 'first_name')
-selectFunc2 = seleciona2('dept_emp','emp_no','dept_no')
+#selectFunc = seleciona2('employees','emp_no', 'first_name')
+#selectFunc2 = seleciona2('dept_emp','emp_no','dept_no')
 
 #joinUsingFunc = juntaUsando(selectFunc, selectFunc2, 'emp_no')
 
-joinOnFunc = juntaComCondicao(selectFunc, selectFunc2, 'emp_no' ,'emp_no', '>=' ,'499925')
+#joinOnFunc = juntaComCondicao(selectFunc, selectFunc2, 'emp_no' ,'emp_no', '>=' ,'499925')
 #whereFunc = onde(joinOnFunc,'first_name', '=' , 'Parto')
-imprimeFunc(joinOnFunc)
+#imprimeFunc(joinOnFunc)
 #whereFunc = onde(selectFunc,'first_name', '=' , 'Parto')
 #andFunc = eAinda(whereFunc, '=',('gender', 'M'),('last_name', 'Baek')) 
 #orFunc = ouAinda(selectFunc,'=',('first_name','Parto'),('first_name','Adil'),('first_name','xes'))
@@ -455,4 +462,3 @@ imprimeFunc(joinOnFunc)
 #atualiza('employees', 'emp_no', '10001', first_name='George', last_name='NULL', )
 
 #deletaCondicao('employees', 'emp_no', '>', '10005')
-
