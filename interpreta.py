@@ -17,85 +17,54 @@ def interpreta(comando):
     padrao_ordena = re.compile(r'ordena\s+por\s+([a-zA-Z_]+)\s+(asc|desc)')
     padrao_e = re.compile(r'e\s+([a-zA-Z_]+)\s*=\s*([^\s]+)')
 
-    re_importa_csv = padrao_importa_csv.match(comando)
-    re_importa_banco = padrao_importa_banco.match(comando)
-    re_insere = padrao_insere.match(comando)
-    re_atualiza = padrao_atualiza.match(comando)
-    re_deleta = padrao_deleta.match(comando)
-    re_seleciona = padrao_seleciona.match(comando)
-    re_onde = padrao_onde.match(comando)
-    re_ordena = padrao_ordena.match(comando)
-    re_e = padrao_e.findall(comando)
+    condicoes = [padrao_importa_csv, padrao_importa_banco, padrao_insere, padrao_atualiza, padrao_deleta, padrao_seleciona, padrao_onde, padrao_ordena, padrao_e]
 
-    if re_importa_banco:
-        tabela = re_importa_banco.group(1)
-        banco = re_importa_banco.group(2)
-        importaBanco(banco, tabela)
-        
-    elif re_importa_csv:
-        nome = re_importa_csv.group(1)
-        tabela = nome + ".csv"
-        importaCSV(tabela)
-    
-    elif re_insere:
-        tabela = re_insere.group(1)
-        campos = re_insere.group(2).split(",")
-        valores = re_insere.group(3).split(",")
+    comandos = []  # Lista para armazenar os comandos
+    dados = None
 
-        campos = [campo.strip() for campo in campos]
-        valores = [valor.strip() for valor in valores]
+    # Verifica qual padrão corresponde ao comando
+    for padrao in condicoes:
+        matches = list(padrao.finditer(comando))
+        if matches:
+            comandos.extend([(padrao, match) for match in matches])
 
-        dados = dict(zip(campos, valores))
-        insere(tabela, **dados)
-        
-    elif re_atualiza:
-        tabela = re_atualiza.group(1)
-        campos_valores = re_atualiza.group(2)
-        campof = re_atualiza.group(3)
-        valorf = re_atualiza.group(4)
+    # Se não houver correspondência com nenhum padrão, imprime comando inválido
+    if not comandos:
+        print("Comando inválido!")
+        return
 
-        campos_valores = re.sub(r'\(|\)', '', campos_valores).split(',') # Tratamento da string para remover parênteses extras e dividir campos e valores
+    # Processa todos os comandos encontrados
+    for padrao, match in comandos:
+        #print(f"Padrão: {padrao}, Match: {match.group(0)}")
 
-        dados = {}
-        for par in campos_valores:
-            campo, valor = par.split('=')
-            dados[campo.strip()] = valor.strip()
+        if padrao is padrao_seleciona:
+            campos_str = match.group(1)
+            tabela = match.group(2)
+            campos = [campo.strip() for campo in campos_str.split(',')]
+            dados = seleciona(tabela, *campos)
+        elif padrao is padrao_onde:
+            if dados:
+                campo = match.group(1)
+                valor = match.group(2)
+                dados = onde(dados, campo, valor)
+            else:
+                print("Você deve primeiro selecionar dados usando 'seleciona'")
+        elif padrao is padrao_ordena:
+            if dados:
+                campo = match.group(1)
+                ordem = match.group(2)
+                dados = ordenaPor(dados, campo, ordem)
+            else:
+                print("Você deve primeiro selecionar dados usando 'seleciona'")
+        elif padrao is padrao_e:
+            chave, valor = match.groups()
+            dados_novos = [(chave, valor)]
+            dados = eAinda(dados, *dados_novos)
 
-        atualiza(tabela, campof, valorf, **dados)
-
-    elif re_deleta:
-        tabela = re_deleta.group(1)
-        campo = re_deleta.group(2)
-        condicao = re_deleta.group(3)
-        valor = re_deleta.group(4)
-        
-        if condicao == "=":
-            deleta(tabela, campo, valor)
         else:
-            deletaCondicao(tabela, campo, condicao,valor)
+            # Trate os outros padrões conforme necessário
+            pass
 
-    elif re_seleciona:
-        campos_str = re_seleciona.group(1)
-        tabela = re_seleciona.group(2)
-        
-        campos = [campo.strip() for campo in campos_str.split(',')]
-        seleciona(tabela, *campos)
+    # Imprima os dados no final
+    imprimeFunc(dados)
 
-    elif re_onde(dados):
-        campo = re_onde.group(1)
-        valor = re_onde.group(2)
-    
-        onde(dados, campo, valor)
-
-    elif re_ordena(dados):
-        campo = re_ordena.group(1)
-        ordem = re_ordena.group(2)
-        ordenaPor(dados, campo, ordem)
-    
-    elif re_e(dados):
-        dados = [(chave, '=', valor) for chave, valor in re_e]
-        eAinda(dados, *dados)
-
-
-    else:
-        print("Comando invalido!")
