@@ -320,16 +320,54 @@ def ordenaPor(dados, campo, ordem='asc'):
 
     return dados_ordenados
 
+def junta(tabela1, tabela2, coluna_comum):
+    dados_tabela1 = abreTabela(tabela1)
+    dados_tabela2 = abreTabela(tabela2)
+
+    if dados_tabela1 is None or dados_tabela2 is None:
+        print("Erro ao abrir uma das tabelas.")
+        return []
+
+    index_tabela2 = {linha[coluna_comum]: linha for linha in dados_tabela2}
+
+    resultado = []
+
+    for linha1 in dados_tabela1:
+        chave = linha1[coluna_comum]
+        if chave in index_tabela2:
+            linha_resultado = {**linha1, **index_tabela2[chave]}
+            resultado.append(linha_resultado)
+
+    return resultado
+
+# Função para abrir tabela
+def abreTabela(tabela):
+    arquivo_tabela = os.path.join('data', f"{tabela}.banco")
+
+    if not os.path.exists(arquivo_tabela):
+        print(f"Tabela '{tabela}' não encontrada!")
+        return None
+
+    try:
+        with open(arquivo_tabela, 'r') as arquivo:
+            leitor = csv.DictReader(arquivo)
+            dados_tabela = list(leitor)
+            return dados_tabela
+
+    except Exception as e:
+        print(f"Erro ao abrir a tabela '{tabela}': {e}")
+        return None
 
 #importaCSV('employees.csv') # importa do .csv
 #importaBanco('employees', 'employees') # importa do servidor MYSQL direto
-selectFunc = seleciona('employees', 'first_name', 'last_name', 'gender')
+#selectFunc = seleciona('employees','emp_no', 'first_name', 'last_name', 'gender')
+joinFunc = junta('employees','dept_emp','emp_no') 
 #whereFunc = onde(selectFunc,'first_name', '=' , 'Parto')
 #andFunc = eAinda(whereFunc, '=',('gender', 'M'),('last_name', 'Baek')) 
-orFunc = ouAinda(selectFunc,'=',('first_name','Parto'),('first_name','Adil'),('first_name','xes'))
+#orFunc = ouAinda(selectFunc,'=',('first_name','Parto'),('first_name','Adil'),('first_name','xes'))
 #dados_ordenados = ordenaPor(whereFunc, 'last_name')
 
-imprimeFunc(orFunc)
+imprimeFunc(joinFunc)
 
 
 #insere('employees', emp_no=10011, birth_date='1953-11-07', first_name='Mary', last_name='Sluis', gender='F', hire_date='1990-01-22')
