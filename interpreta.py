@@ -33,7 +33,7 @@ def interpreta(comando):
         print("Comando inválido!")
         return
 
-    if not comando.startswith(("atualiza", "deleta")): # Verifica se o comando nao e atualiza ou deleta por causa do onde
+    if not comando.startswith(("atualiza", "deleta", "insere")): # Verifica se o comando nao e atualiza ou deleta por causa do onde
 
         for padrao, match in comandos: # Processa os comandos encontrados
             if padrao is padrao_seleciona:
@@ -93,28 +93,12 @@ def interpreta(comando):
 
                 insere(tabela, **dados)
 
-            
-
-            elif padrao is padrao_deleta:
-                tabela = match.group(1)
-                campo = match.group(2)
-                condicao = match.group(3)
-                valor = match.group(4)
-                
-                if condicao == "=":
-                    deleta(tabela, campo, valor)
-                else:
-                    deletaCondicao(tabela, campo, condicao,valor)
-
-            else:
-                print("Comando inválido!")
-                break
-
-            imprimeFunc(dados)
+        imprimeFunc(dados)
     
     else:
         p_atualiza = padrao_atualiza.match(comando)
         p_deleta = padrao_deleta.match(comando)
+        p_insere = padrao_insere.match(comando)
 
         if p_atualiza:
             tabela = p_atualiza.group(1)
@@ -141,3 +125,14 @@ def interpreta(comando):
                     deleta(tabela, campo, valor)
                 else:
                     deletaCondicao(tabela, campo, condicao,valor)
+        
+        elif p_insere:
+                tabela = p_insere.group(1)
+                campos = p_insere.group(2).split(",")
+                valores = p_insere.group(3).split(",")
+
+                campos = [campo.strip() for campo in campos]
+                valores = [valor.strip() for valor in valores]
+                dados = dict(zip(campos, valores))
+
+                insere(tabela, **dados)
