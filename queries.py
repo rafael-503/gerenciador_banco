@@ -223,7 +223,7 @@ def seleciona(tabela, *campos):
         print("Erro ao abrir a tabela:")
         return 
 
-
+'''
 def onde(dados, campo, valor):
     try:
         indice = list(dados.keys()).index(campo) # Verifica se o campo existe na tabela
@@ -241,10 +241,36 @@ def onde(dados, campo, valor):
     # Transpõe as linhas filtradas de volta para o formato original
     valores = {campo: list(coluna) for campo, coluna in zip(dados.keys(), zip(*linhas))}
 
-    #print(' '.join(dados.keys())) # Imprime o nome dos campos
+    return valores
+'''
+def onde(dados, campo, condicao, valor):
+    try:
+        indice = list(dados.keys()).index(campo)  # Verifica se o campo existe na tabela
+    except ValueError:
+        print(f"Campo '{campo}' não encontrado na tabela.")
+        return []
 
-    #for linha in zip(*valores.values()): 
-    #    print(' '.join(map(str, linha)))
+    operadores = ['>', '>=', '<', '<=']
+
+    if condicao not in operadores:
+        print("Operador inválido.")
+        return []
+
+    comparacoes = {
+        '>': lambda x, y: x > y,
+        '>=': lambda x, y: x >= y,
+        '<': lambda x, y: x < y,
+        '<=': lambda x, y: x <= y
+    }
+
+    linhas = [linha for linha in zip(*dados.values()) if comparacoes[condicao](linha[indice], valor)]
+
+    if not linhas:
+        print(f"Nenhuma linha encontrada onde '{campo}' {condicao} '{valor}'.")
+        return []
+
+    # Transpõe as linhas filtradas de volta para o formato original
+    valores = {campo: list(coluna) for campo, coluna in zip(dados.keys(), zip(*linhas))}
 
     return valores
 
@@ -252,7 +278,7 @@ def eAinda(dados, *clausulas):
     resultado = dados
     
     for clausula in clausulas:
-        campo, operador, valor = clausula
+        campo, valor = clausula
         resultado = onde(resultado, campo, valor)
     
     return resultado
