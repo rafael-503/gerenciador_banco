@@ -17,7 +17,8 @@ def interpreta(comando):
     padrao_ordena = re.compile(r'ordena\s+por\s+([a-zA-Z_]+)\s+(asc|desc)')
     padrao_e = re.compile(r'e\s+([a-zA-Z_]+)\s*([><=]+)\s*([^\s]+)')
     padrao_ou = re.compile(r'ou\s+([a-zA-Z_]+)\s*([><=]+)\s*([^\s]+)')
-
+    padrao_junta_usando = padrao_junta = re.compile(r'junta\s+([a-zA-Z_]+)\s+usando\s+\(\s*([a-zA-Z_]+)\s*\)')
+    padrao_junta_em = re.compile(r'junta\s+([a-zA-Z_]+)\s+em\s+([a-zA-Z_]+)\.([a-zA-Z_]+)\s*=\s*([a-zA-Z_]+)\.([a-zA-Z_]+)')
 
     condicoes = [padrao_importa_csv, padrao_importa_banco, padrao_insere, padrao_atualiza, padrao_deleta, padrao_seleciona, padrao_ordena, padrao_e, padrao_onde, padrao_ou]
 
@@ -94,7 +95,27 @@ def interpreta(comando):
                 else:
                     print("Você deve primeiro selecionar dados usando seleciona")
                     return
+            
+            elif padrao is padrao_junta_usando:
+                if dados:
+                    tabela = match.group(1)
+                    chave = match.group(2)
+                    #dados = juntaUsando(dados, tabela, chave)
+                else:
+                    print("Você deve primeiro selecionar dados usando seleciona")
+                    return
 
+            elif padrao is padrao_junta_em:
+                if dados:
+                    tabela1 = match.group(1)
+                    tabela2 = match.group(2)
+                    campo1 = match.group(3)
+                    campo2 = match.group(4)
+                    #dados = juntaEm(dados, tabela1, tabela2, campo1, campo2)
+                else:
+                    print("Você deve primeiro selecionar dados usando seleciona")
+                    return
+                
         imprimeFunc(dados)
     
     else:
