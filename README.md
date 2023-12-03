@@ -44,3 +44,12 @@ junta - realiza junção de tabelas para combinar dados relacionados.
 
 ``deleta de <tabela> onde campo=valor`` → remove os dados em uma tabela conforme uma condição específica funciona para os operadores >, >=, <, <= e =
 
+``seleciona campo1, campo2, ... de <tabela>`` → seleciona os dados de uma tabela conforme os campos especificados
+
+``seleciona * de <tabela>`` → seleciona todos os dados de uma tabela
+
+``seleciona * de <tabela> onde campo=valor`` → seleciona todos os dados de uma tabela conforme uma condição (campo=valor)
+
+``seleciona * de <tabela> onde campo1=valor1 e campo2=valor2`` → seleciona todos os dados de uma tabela conforme duas condições (campo1=valor1 e campo2=valor2)
+
+``seleciona * de <tabela> onde campo1=valor1 ou campo2=valor2`` → seleciona todos os dados de uma tabela conforme pelo menos uma condição (campo1=valor1 ou campo2=valor2)
