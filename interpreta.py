@@ -33,14 +33,11 @@ def interpreta(comando):
         if matches:
             comandos.extend([(padrao, match) for match in matches])
 
-    
     if not comandos: # Se o comando nao for igual a nenhum dos padroes
         print("Comando inválido!")
         return
     
-    #or "junta" in comando.split()
     if not comando.startswith(("atualiza", "deleta", "insere")): # Verifica se o comando nao e atualiza ou deleta por causa do onde
-
         for padrao, match in comandos: # Processa os comandos encontrados
             if padrao is padrao_seleciona:
                 campos_str = match.group(1)

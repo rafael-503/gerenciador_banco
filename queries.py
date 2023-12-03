@@ -1,7 +1,6 @@
 import csv
 import MySQLdb
 import os
-
 from imprime import *
 
 def importaCSV(nomeArquivo): #cria um .banco a partir de um CSV local
@@ -17,7 +16,7 @@ def importaCSV(nomeArquivo): #cria um .banco a partir de um CSV local
             with open(nomeSaida, 'w', newline='') as arqBanco:
                 writer = csv.writer(arqBanco)
                 try:
-                    for coluna in leitor:
+                    for coluna in leitor: # Adiciona linha por linha no arquivo .banco
                         writer.writerow(coluna)
                     print("Tabela importada com sucesso!")
 
@@ -29,7 +28,7 @@ def importaCSV(nomeArquivo): #cria um .banco a partir de um CSV local
         return 
 
 
-def importaBanco(nomeBanco, tabela): #cria um .banco a partir do servidor MySQL
+def importaBanco(nomeBanco, tabela): # cria um .banco a partir do servidor MySQL
     if not os.path.exists('data'): # Verifica se a pasta data existe
         os.makedirs('data')
 
@@ -61,6 +60,7 @@ def importaBanco(nomeBanco, tabela): #cria um .banco a partir do servidor MySQL
     print("Tabela importada com sucesso!")
     return
 
+
 def insere(tabela, **dados):
     arq = os.path.join('data', f"{tabela}.banco") 
     if not os.path.exists(arq): # Verifica se a tabela existe
@@ -83,6 +83,7 @@ def insere(tabela, **dados):
     except:
         print("Erro ao inserir os dados na tabela.")
         return 
+
 
 def deletaTabela(tabela):
     arq = os.path.join('data', f"{tabela}.banco")
@@ -138,7 +139,7 @@ def deletaCondicao(tabela, campo, condicao, valor):
         print(f"Tabela '{tabela}' não encontrada.")
         return
 
-    operadores = ['>', '>=', '<', '<=']
+    operadores = ['>', '>=', '<', '<=', '='] # Define uma lista de operadores válidos
 
     if condicao not in operadores:
         print("Operador inválido.")
@@ -195,8 +196,12 @@ def atualiza(tabela, campo, valor, **dados):
 
     except:
         print("Erro ao atualizar os dados da tabela.")
-        return 
+        return
     
+    print("Dados atualizados com sucesso.")
+    return
+    
+
 def seleciona2(tabela, *campos):
     arq = os.path.join('data', f"{tabela}.banco")
 
@@ -224,7 +229,6 @@ def seleciona2(tabela, *campos):
     except Exception as e:
         print("Erro ao abrir a tabela:", e)
         return []
-
 
 
 def seleciona(tabela, *campos):
@@ -259,26 +263,7 @@ def seleciona(tabela, *campos):
         print("Erro ao abrir a tabela:")
         return 
 
-'''
-def onde(dados, campo, valor):
-    try:
-        indice = list(dados.keys()).index(campo) # Verifica se o campo existe na tabela
 
-    except:
-        print(f"Campo '{campo}' não encontrado na tabela.")
-        return []
-    
-    linhas = [linha for linha in zip(*dados.values()) if linha[indice] == valor] # Filtra as linhas onde o campo é igual ao valor
-
-    if not linhas:
-        print(f"Nenhuma linha encontrada onde '{campo}' é igual a '{valor}'.")
-        return []
-
-    # Transpõe as linhas filtradas de volta para o formato original
-    valores = {campo: list(coluna) for campo, coluna in zip(dados.keys(), zip(*linhas))}
-
-    return valores
-'''
 def onde(dados, campo, condicao, valor):
     try:
         indice = list(dados.keys()).index(campo)  # Verifica se o campo existe na tabela
@@ -310,6 +295,7 @@ def onde(dados, campo, condicao, valor):
     valores = {campo: list(coluna) for campo, coluna in zip(dados.keys(), zip(*linhas))}
 
     return valores
+
 
 def eAinda(dados, condicao, *clausulas):
     """
@@ -347,7 +333,6 @@ def ouAinda(dados, condicao, *clausulas):
     return resultado
 
  
-
 def ordenaPor(dados, campo, ordem='asc'):
     if campo not in dados:
         print(f"Campo '{campo}' não encontrado nos dados.")
@@ -366,6 +351,7 @@ def ordenaPor(dados, campo, ordem='asc'):
     dados_ordenados = {campo: list(coluna) for campo, coluna in zip(chaves, zip(*dados_ordenados))}
 
     return dados_ordenados
+
 
 def juntaUsando(tabela1, tabela2, coluna_comum):
     resultado = []
@@ -391,6 +377,7 @@ def juntaUsando(tabela1, tabela2, coluna_comum):
 
     # Retorna os dados no formato esperado pelas outras funcoes
     return {campo: [linha[campo] for linha in resultado] for campo in resultado[0]}
+
 
 def juntaComCondicao(tabela1, tabela2, colunaComum, coluna, operador, valor):
     # Cria um índice para a tabela2 usando a colunaComum
@@ -434,6 +421,8 @@ def juntaComCondicao(tabela1, tabela2, colunaComum, coluna, operador, valor):
     # Retorna os dados no formato esperado por onde
     campos = resultado[0].keys() if resultado else []
     return {campo: [linha[campo] for linha in resultado] for campo in campos}
+
+
 
 
 

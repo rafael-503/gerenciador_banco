@@ -34,13 +34,15 @@ em - alternativa ao usando para especificar campos para junção de tabelas.
 junta - realiza junção de tabelas para combinar dados relacionados.
 
 ## Exemplos de uso:
-``importa <tabela>`` → importa dados de uma tabela csv
+``importa <tabela> do csv`` → importa dados de uma tabela csv
 
 ``importa <tabela> de <banco>`` → importa dados de uma tabela a partir de um banco de dados MySQL existente
 
 ``insere em <tabela> (campo1, campo2, ...) valores (valor1, valor2, ...)`` → insere dados em uma tabela
 
 ``atualiza <tabela> para campo1=valor1, campo2=valor2, ... onde campo=valor`` → atualiza os dados em uma tabela conforme uma condição (campo=valor)
+
+``deleta <tabela>`` → deleta uma tabela
 
 ``deleta de <tabela> onde campo=valor`` → remove os dados em uma tabela conforme uma condição específica funciona para os operadores >, >=, <, <= e =
 
@@ -53,3 +55,7 @@ junta - realiza junção de tabelas para combinar dados relacionados.
 ``seleciona * de <tabela> onde campo1=valor1 e campo2=valor2`` → seleciona todos os dados de uma tabela conforme duas condições (campo1=valor1 e campo2=valor2)
 
 ``seleciona * de <tabela> onde campo1=valor1 ou campo2=valor2`` → seleciona todos os dados de uma tabela conforme pelo menos uma condição (campo1=valor1 ou campo2=valor2)
+
+``seleciona * de <tabela1> junta <tabela2> usando (campo) `` → junta duas tabelas baseado em um campo específico
+
+``seleciona * de <tabela1> junta <tabela2> em tabela1.campo1 = tabela2.campo2 `` → junta duas tabelas baseado em uma condição, suporta os operadores =, >, <, >= e <=
