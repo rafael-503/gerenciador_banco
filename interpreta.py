@@ -16,8 +16,10 @@ def interpreta(comando):
     padrao_onde = re.compile(r'onde\s+([a-zA-Z_]+)\s*([><=]+)\s*([a-zA-Z_0-9]+)')
     padrao_ordena = re.compile(r'ordena\s+por\s+([a-zA-Z_]+)\s+(asc|desc)')
     padrao_e = re.compile(r'e\s+([a-zA-Z_]+)\s*([><=]+)\s*([^\s]+)')
+    padrao_ou = re.compile(r'ou\s+([a-zA-Z_]+)\s*([><=]+)\s*([^\s]+)')
 
-    condicoes = [padrao_importa_csv, padrao_importa_banco, padrao_insere, padrao_atualiza, padrao_deleta, padrao_seleciona, padrao_ordena, padrao_e, padrao_onde]
+
+    condicoes = [padrao_importa_csv, padrao_importa_banco, padrao_insere, padrao_atualiza, padrao_deleta, padrao_seleciona, padrao_ordena, padrao_e, padrao_onde, padrao_ou]
 
     comandos = []  # Cria uma lista para armazenar os comandos
     dados = None
@@ -82,16 +84,16 @@ def interpreta(comando):
                 tabela = nome + ".csv"
                 importaCSV(tabela)
 
-            elif padrao is padrao_insere:
-                tabela = match.group(1)
-                campos = match.group(2).split(",")
-                valores = match.group(3).split(",")
-
-                campos = [campo.strip() for campo in campos]
-                valores = [valor.strip() for valor in valores]
-                dados = dict(zip(campos, valores))
-
-                insere(tabela, **dados)
+            elif padrao is padrao_ou:
+                if dados:
+                    campo = match.group(1)
+                    operador = match.group(2)
+                    valor = match.group(3)
+                    dados_novos = [(campo, valor)]
+                    dados = ouAinda(dados, operador, *dados_novos)
+                else:
+                    print("Você deve primeiro selecionar dados usando seleciona")
+                    return
 
         imprimeFunc(dados)
     
