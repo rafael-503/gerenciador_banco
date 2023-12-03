@@ -117,11 +117,11 @@ def interpreta(comando):
                     campo1 = match.group(3)
                     operador = match.group(4)
                     campo2 = match.group(6)
-
                     colunas = list(dados.keys())
-                    dados1 = seleciona2(tabela1, *colunas)
+                    dados1 = seleciona2(tabela1, '*')
                     dados2 = seleciona2(tabela2, '*')
-                    dados = juntaComCondicao(tabela1, tabela2, campo1, campo2, operador)
+
+                    dados = juntaComCondicao(dados1, dados2, campo1, campo2)
                 else:
                     print("Você deve primeiro selecionar dados usando seleciona")
                     return
