@@ -275,7 +275,7 @@ def onde(dados, campo, condicao, valor):
 
     return valores
 
-def eAinda(dados, condicao,*clausulas):
+def eAinda(dados, condicao, *clausulas):
     resultado = dados
     
     for clausula in clausulas:
@@ -283,6 +283,22 @@ def eAinda(dados, condicao,*clausulas):
         resultado = onde(resultado, campo, condicao, valor)
     
     return resultado
+
+def ouAinda(dados, condicao, *clausulas):
+    resultado = {campo: [] for campo in dados.keys()}
+    
+    for clausula in clausulas:
+        campo, valor = clausula
+        temp_resultado = onde(dados, campo, condicao, valor)
+        
+        if isinstance(temp_resultado, list):
+            continue  # Ignorar cláusulas que não encontram correspondências
+        
+        for campo, valores in temp_resultado.items():
+            resultado[campo].extend(valores)
+    
+    return resultado
+
  
 
 def ordenaPor(dados, campo, ordem='asc'):
@@ -307,12 +323,13 @@ def ordenaPor(dados, campo, ordem='asc'):
 
 #importaCSV('employees.csv') # importa do .csv
 #importaBanco('employees', 'employees') # importa do servidor MYSQL direto
-#selectFunc = seleciona('employees', 'first_name', 'last_name', 'gender')
-#whereFunc = onde(selectFunc, 'first_name', 'Parto')
-#andFunc = eAinda(whereFunc, ('gender', '=', 'M'),('last_name', '=', 'Baek')) 
+selectFunc = seleciona('employees', 'first_name', 'last_name', 'gender')
+#whereFunc = onde(selectFunc,'first_name', '=' , 'Parto')
+#andFunc = eAinda(whereFunc, '=',('gender', 'M'),('last_name', 'Baek')) 
+orFunc = ouAinda(selectFunc,'=',('first_name','Parto'),('first_name','Adil'),('first_name','xes'))
 #dados_ordenados = ordenaPor(whereFunc, 'last_name')
 
-#imprimeFunc(andFunc)
+imprimeFunc(orFunc)
 
 
 #insere('employees', emp_no=10011, birth_date='1953-11-07', first_name='Mary', last_name='Sluis', gender='F', hire_date='1990-01-22')
