@@ -360,7 +360,7 @@ def ordenaPor(dados, campo, ordem='asc'):
 
     return dados_ordenados
 
-def junta(tabela1, tabela2, coluna_comum):
+def juntaUsando(tabela1, tabela2, coluna_comum):
     resultado = []
 
     # Verifica se os resultados foram fornecidos
@@ -385,6 +385,50 @@ def junta(tabela1, tabela2, coluna_comum):
     # Retorna os dados no formato esperado pelas outras funcoes
     return {campo: [linha[campo] for linha in resultado] for campo in resultado[0]}
 
+def juntaComCondicao(tabela1, tabela2, colunaComum, coluna, operador, valor):
+    # Cria um índice para a tabela2 usando a colunaComum
+    index_tabela2 = {str(linha[colunaComum]): linha for linha in tabela2}
+
+    resultado = []
+
+    for linha1 in tabela1:
+        # Verifica se a colunaComum está presente na linha1
+        if colunaComum in linha1:
+            chave = str(linha1[colunaComum])
+
+            # Verifica se a chave está presente no índice
+            if chave in index_tabela2:
+                linha2 = index_tabela2[chave]
+
+                # Avalia a condição com base no operador, tratando strings como strings
+                valor_coluna = linha2[coluna]
+                try:
+                    valor_coluna = int(valor_coluna)
+                    valor = int(valor)
+                except ValueError:
+                    pass  # Se não for possível converter para int, mantém como string
+
+                if operador == '=' and valor_coluna == valor:
+                    linha_resultado = {**linha1, **linha2}
+                    resultado.append(linha_resultado)
+                elif operador == '<' and valor_coluna < valor:
+                    linha_resultado = {**linha1, **linha2}
+                    resultado.append(linha_resultado)
+                elif operador == '>' and valor_coluna > valor:
+                    linha_resultado = {**linha1, **linha2}
+                    resultado.append(linha_resultado)
+                elif operador == '<=' and valor_coluna <= valor:
+                    linha_resultado = {**linha1, **linha2}
+                    resultado.append(linha_resultado)
+                elif operador == '>=' and valor_coluna >= valor:
+                    linha_resultado = {**linha1, **linha2}
+                    resultado.append(linha_resultado)
+
+    # Retorna os dados no formato esperado por onde
+    campos = resultado[0].keys() if resultado else []
+    return {campo: [linha[campo] for linha in resultado] for campo in campos}
+
+
 
 
 
@@ -393,11 +437,11 @@ def junta(tabela1, tabela2, coluna_comum):
 selectFunc = seleciona2('employees','emp_no', 'first_name')
 selectFunc2 = seleciona2('dept_emp','emp_no','dept_no')
 
-joinFunc = junta(selectFunc, selectFunc2, 'emp_no')
+#joinUsingFunc = juntaUsando(selectFunc, selectFunc2, 'emp_no')
 
-#joinOnFunc = juntaComCondicao(selectFunc, selectFunc2, 'dept_no', 'dept_no', 'd005')
+joinOnFunc = juntaComCondicao(selectFunc, selectFunc2, 'emp_no' ,'emp_no', '>=' ,'499925')
 #whereFunc = onde(joinOnFunc,'first_name', '=' , 'Parto')
-imprimeFunc(joinFunc)
+imprimeFunc(joinOnFunc)
 #whereFunc = onde(selectFunc,'first_name', '=' , 'Parto')
 #andFunc = eAinda(whereFunc, '=',('gender', 'M'),('last_name', 'Baek')) 
 #orFunc = ouAinda(selectFunc,'=',('first_name','Parto'),('first_name','Adil'),('first_name','xes'))
