@@ -379,65 +379,42 @@ def juntaUsando(tabela1, tabela2, coluna_comum):
     return {campo: [linha[campo] for linha in resultado] for campo in resultado[0]}
 
 
-def juntaComCondicao(tabela1, tabela2, colunaComum, coluna, operador, valor):
-    # Cria um índice para a tabela2 usando a colunaComum
-    index_tabela2 = {str(linha[colunaComum]): linha for linha in tabela2}
-
-    resultado = []
+def juntaComCondicao(tabela1, tabela2, campo1, campo2, operador):
+    dados_juntos = []
+    indice_tabela2 = {linha[campo2]: linha for linha in tabela2}
 
     for linha1 in tabela1:
-        # Verifica se a colunaComum está presente na linha1
-        if colunaComum in linha1:
-            chave = str(linha1[colunaComum])
+        chave_procura = linha1[campo1]
 
-            # Verifica se a chave está presente no índice
-            if chave in index_tabela2:
-                linha2 = index_tabela2[chave]
+        if chave_procura in indice_tabela2:
+            linha2 = indice_tabela2[chave_procura]
 
-                # Avalia a condição com base no operador, tratando strings como strings
-                valor_coluna = linha2[coluna]
-                try:
-                    valor_coluna = int(valor_coluna)
-                    valor = int(valor)
-                except ValueError:
-                    pass  # Se não for possível converter para int, mantém como string
+            # Adicionamos uma verificação para o operador de comparação
+            if (
+                operador == '=' and linha1[campo1] == linha2[campo2]
+                or operador == '<' and linha1[campo1] < linha2[campo2]
+                or operador == '>' and linha1[campo1] > linha2[campo2]
+                or operador == '<=' and linha1[campo1] <= linha2[campo2]
+                or operador == '>=' and linha1[campo1] >= linha2[campo2]
+            ):
+                linha_junta = {**linha1, **linha2}
+                dados_juntos.append(linha_junta)
 
-                if operador == '=' and valor_coluna == valor:
-                    linha_resultado = {**linha1, **linha2}
-                    resultado.append(linha_resultado)
-                elif operador == '<' and valor_coluna < valor:
-                    linha_resultado = {**linha1, **linha2}
-                    resultado.append(linha_resultado)
-                elif operador == '>' and valor_coluna > valor:
-                    linha_resultado = {**linha1, **linha2}
-                    resultado.append(linha_resultado)
-                elif operador == '<=' and valor_coluna <= valor:
-                    linha_resultado = {**linha1, **linha2}
-                    resultado.append(linha_resultado)
-                elif operador == '>=' and valor_coluna >= valor:
-                    linha_resultado = {**linha1, **linha2}
-                    resultado.append(linha_resultado)
-
-    # Retorna os dados no formato esperado por onde
-    campos = resultado[0].keys() if resultado else []
-    return {campo: [linha[campo] for linha in resultado] for campo in campos}
-
-
-
+    return dados_juntos
 
 
 
 
 #importaCSV('employees.csv') # importa do .csv
 #importaBanco('employees', 'employees') # importa do servidor MYSQL direto
-#selectFunc = seleciona2('employees','emp_no', 'first_name')
-#selectFunc2 = seleciona2('dept_emp','emp_no','dept_no')
+##selectFunc = seleciona2('employees','*')
+##selectFunc2 = seleciona2('titles','*')
 
 #joinUsingFunc = juntaUsando(selectFunc, selectFunc2, 'emp_no')
-
+##joinOnFunc = juntaComCondicao(selectFunc, selectFunc2, 'emp_no' ,'emp_no', '=')
 #joinOnFunc = juntaComCondicao(selectFunc, selectFunc2, 'emp_no' ,'emp_no', '>=' ,'499925')
 #whereFunc = onde(joinOnFunc,'first_name', '=' , 'Parto')
-#imprimeFunc(joinOnFunc)
+##imprimeFunc(joinOnFunc)
 #whereFunc = onde(selectFunc,'first_name', '=' , 'Parto')
 #andFunc = eAinda(whereFunc, '=',('gender', 'M'),('last_name', 'Baek')) 
 #orFunc = ouAinda(selectFunc,'=',('first_name','Parto'),('first_name','Adil'),('first_name','xes'))

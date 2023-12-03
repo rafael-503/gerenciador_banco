@@ -121,7 +121,7 @@ def interpreta(comando):
                     dados1 = seleciona2(tabela1, '*')
                     dados2 = seleciona2(tabela2, '*')
 
-                    dados = juntaComCondicao(dados1, dados2, campo1, campo2)
+                    dados = juntaComCondicao(dados1, dados2, campo1, campo2, operador)
                 else:
                     print("Você deve primeiro selecionar dados usando seleciona")
                     return
