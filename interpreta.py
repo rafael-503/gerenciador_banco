@@ -18,8 +18,7 @@ def interpreta(comando):
     padrao_e = re.compile(r'e\s+([a-zA-Z_]+)\s*([><=]+)\s*([^\s]+)')
     padrao_ou = re.compile(r'ou\s+([a-zA-Z_]+)\s*([><=]+)\s*([^\s]+)')
     padrao_junta_usando = re.compile(r'junta\s+([a-zA-Z_]+)\s+usando\s+\(\s*([a-zA-Z_]+)\s*\)')
-    
-    padrao_junta_em = re.compile(r'junta\s+([a-zA-Z_]+)\s+em\s+([a-zA-Z_]+)\.([a-zA-Z_]+)\s*=\s*([a-zA-Z_]+)\.([a-zA-Z_]+)')
+    padrao_junta_em = re.compile(r'junta\s+([a-zA-Z_]+)\s+em\s+([a-zA-Z_]+)\.([a-zA-Z_]+)\s*([><=]+)\s*([a-zA-Z_]+)\.([a-zA-Z_]+)')
 
     condicoes = [padrao_importa_csv, padrao_importa_banco, padrao_insere, padrao_atualiza, padrao_deleta, padrao_seleciona, padrao_ordena, padrao_e, padrao_onde, padrao_ou, padrao_junta_usando, padrao_junta_em]
 
@@ -115,11 +114,14 @@ def interpreta(comando):
 
             elif padrao is padrao_junta_em:
                 if dados:
-                    tabela1 = match.group(1)
-                    tabela2 = match.group(2)
+                    tabela1 = match.group(2)
+                    tabela2 = match.group(1)
                     campo1 = match.group(3)
-                    campo2 = match.group(4)
-                    #dados = juntaEm(dados, tabela1, tabela2, campo1, campo2)
+                    operador = match.group(4)
+                    campo2 = match.group(6)
+                    print(tabela1, tabela2, campo1, operador, campo2)
+                    #juntaComCondicao(tabela1, tabela2, colunaComum, coluna, operador, valor)
+                    dados = juntaComCondicao(tabela1, tabela2, campo2, campo1, campo2)
                 else:
                     print("Você deve primeiro selecionar dados usando seleciona")
                     return
