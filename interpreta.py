@@ -17,13 +17,15 @@ def interpreta(comando):
     padrao_ordena = re.compile(r'ordena\s+por\s+([a-zA-Z_]+)\s+(asc|desc)')
     padrao_e = re.compile(r'e\s+([a-zA-Z_]+)\s*([><=]+)\s*([^\s]+)')
     padrao_ou = re.compile(r'ou\s+([a-zA-Z_]+)\s*([><=]+)\s*([^\s]+)')
-    padrao_junta_usando = padrao_junta = re.compile(r'junta\s+([a-zA-Z_]+)\s+usando\s+\(\s*([a-zA-Z_]+)\s*\)')
+    padrao_junta_usando = re.compile(r'junta\s+([a-zA-Z_]+)\s+usando\s+\(\s*([a-zA-Z_]+)\s*\)')
+    
     padrao_junta_em = re.compile(r'junta\s+([a-zA-Z_]+)\s+em\s+([a-zA-Z_]+)\.([a-zA-Z_]+)\s*=\s*([a-zA-Z_]+)\.([a-zA-Z_]+)')
 
-    condicoes = [padrao_importa_csv, padrao_importa_banco, padrao_insere, padrao_atualiza, padrao_deleta, padrao_seleciona, padrao_ordena, padrao_e, padrao_onde, padrao_ou]
+    condicoes = [padrao_importa_csv, padrao_importa_banco, padrao_insere, padrao_atualiza, padrao_deleta, padrao_seleciona, padrao_ordena, padrao_e, padrao_onde, padrao_ou, padrao_junta_usando, padrao_junta_em]
 
     comandos = []  # Cria uma lista para armazenar os comandos
     dados = None
+    tabela_selec = None
 
     # Armazena os comandos encontrados em uma lista de acordo com o padrão
     for padrao in condicoes: 
@@ -35,15 +37,17 @@ def interpreta(comando):
     if not comandos: # Se o comando nao for igual a nenhum dos padroes
         print("Comando inválido!")
         return
-
+    
+    #or "junta" in comando.split()
     if not comando.startswith(("atualiza", "deleta", "insere")): # Verifica se o comando nao e atualiza ou deleta por causa do onde
 
         for padrao, match in comandos: # Processa os comandos encontrados
             if padrao is padrao_seleciona:
                 campos_str = match.group(1)
-                tabela = match.group(2)
+                tabela_selec = match.group(2)
                 campos = [campo.strip() for campo in campos_str.split(',')]
-                dados = seleciona(tabela, *campos)
+
+                dados = seleciona(tabela_selec, *campos)
             
             elif padrao is padrao_onde:
                 if dados:
@@ -99,8 +103,12 @@ def interpreta(comando):
             elif padrao is padrao_junta_usando:
                 if dados:
                     tabela = match.group(1)
-                    chave = match.group(2)
-                    #dados = juntaUsando(dados, tabela, chave)
+                    coluna = match.group(2)
+
+                    colunas = list(dados.keys())
+                    dados1 = seleciona2(tabela_selec, *colunas)
+                    dados2 = seleciona2(tabela, '*')
+                    dados = juntaUsando(dados1, dados2, coluna)
                 else:
                     print("Você deve primeiro selecionar dados usando seleciona")
                     return
