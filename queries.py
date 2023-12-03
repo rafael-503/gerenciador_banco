@@ -274,12 +274,12 @@ def onde(dados, campo, condicao, valor):
 
     return valores
 
-def eAinda(dados, *clausulas):
+def eAinda(dados, condicao,*clausulas):
     resultado = dados
     
     for clausula in clausulas:
         campo, valor = clausula
-        resultado = onde(resultado, campo, valor)
+        resultado = onde(resultado, campo, condicao, valor)
     
     return resultado
  
