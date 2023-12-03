@@ -189,6 +189,35 @@ def atualiza(tabela, campo, valor, **dados):
     except:
         print("Erro ao atualizar os dados da tabela.")
         return 
+    
+def seleciona2(tabela, *campos):
+    arq = os.path.join('data', f"{tabela}.banco")
+
+    if not os.path.exists(arq):  # Verifica se a tabela existe
+        print("Tabela não encontrada!")
+        return []
+
+    try:
+        with open(arq, 'r') as arquivo:
+            leitor = csv.DictReader(arquivo)
+
+            if "*" in campos:  # Seleciona todos os campos
+                campos = leitor.fieldnames
+
+            campos_inexistentes = [campo for campo in campos if campo not in leitor.fieldnames]  # Verifica se os campos existem na tabela
+            if campos_inexistentes:
+                print(f"O campo {', '.join(campos_inexistentes)} não existe na tabela '{tabela}'.")
+                return []
+
+            # Cria uma lista para armazenar os valores dos campos escolhidos
+            dados = [{campo: linha[campo] for campo in campos} for linha in leitor]
+
+            return dados
+
+    except Exception as e:
+        print("Erro ao abrir a tabela:", e)
+        return []
+
 
 
 def seleciona(tabela, *campos):
@@ -276,13 +305,24 @@ def onde(dados, campo, condicao, valor):
     return valores
 
 def eAinda(dados, condicao, *clausulas):
+    """
+    Realiza uma operação lógica "E" sucessiva sobre um conjunto de cláusulas em um conjunto de dados.
+
+    Retorna:
+    Um novo conjunto de dados contendo apenas as linhas que atendem a todas as cláusulas.
+
+    """
     resultado = dados
     
+    # Loop sobre cada cláusula
     for clausula in clausulas:
         campo, valor = clausula
+        # Aplica a função onde para filtrar os dados
         resultado = onde(resultado, campo, condicao, valor)
     
+    # Retorna o resultado final
     return resultado
+
 
 def ouAinda(dados, condicao, *clausulas):
     resultado = {campo: [] for campo in dados.keys()}
@@ -321,53 +361,49 @@ def ordenaPor(dados, campo, ordem='asc'):
     return dados_ordenados
 
 def junta(tabela1, tabela2, coluna_comum):
-    dados_tabela1 = abreTabela(tabela1)
-    dados_tabela2 = abreTabela(tabela2)
-
-    if dados_tabela1 is None or dados_tabela2 is None:
-        print("Erro ao abrir uma das tabelas.")
-        return []
-
-    index_tabela2 = {linha[coluna_comum]: linha for linha in dados_tabela2}
-
     resultado = []
 
+    # Verifica se os resultados foram fornecidos
+    if tabela1 is None or tabela2 is None:
+        print("Erro ao obter resultados das tabelas.")
+        return resultado
+
+    # Obtem os dados das tabelas
+    dados_tabela1 = tabela1
+    dados_tabela2 = tabela2
+
+    # Cria um índice para a tabela 2 usando a coluna comum
+    index_tabela2 = {linha[coluna_comum]: linha for linha in dados_tabela2}
+
+    # Realiza o join usando a coluna comum
     for linha1 in dados_tabela1:
         chave = linha1[coluna_comum]
         if chave in index_tabela2:
             linha_resultado = {**linha1, **index_tabela2[chave]}
             resultado.append(linha_resultado)
 
-    return resultado
+    # Retorna os dados no formato esperado pelas outras funcoes
+    return {campo: [linha[campo] for linha in resultado] for campo in resultado[0]}
 
-# Função para abrir tabela
-def abreTabela(tabela):
-    arquivo_tabela = os.path.join('data', f"{tabela}.banco")
 
-    if not os.path.exists(arquivo_tabela):
-        print(f"Tabela '{tabela}' não encontrada!")
-        return None
 
-    try:
-        with open(arquivo_tabela, 'r') as arquivo:
-            leitor = csv.DictReader(arquivo)
-            dados_tabela = list(leitor)
-            return dados_tabela
-
-    except Exception as e:
-        print(f"Erro ao abrir a tabela '{tabela}': {e}")
-        return None
 
 #importaCSV('employees.csv') # importa do .csv
 #importaBanco('employees', 'employees') # importa do servidor MYSQL direto
-#selectFunc = seleciona('employees','emp_no', 'first_name', 'last_name', 'gender')
-joinFunc = junta('employees','dept_emp','emp_no') 
+selectFunc = seleciona2('employees','emp_no', 'first_name')
+selectFunc2 = seleciona2('dept_emp','emp_no','dept_no')
+
+joinFunc = junta(selectFunc, selectFunc2, 'emp_no')
+
+#joinOnFunc = juntaComCondicao(selectFunc, selectFunc2, 'dept_no', 'dept_no', 'd005')
+#whereFunc = onde(joinOnFunc,'first_name', '=' , 'Parto')
+imprimeFunc(joinFunc)
 #whereFunc = onde(selectFunc,'first_name', '=' , 'Parto')
 #andFunc = eAinda(whereFunc, '=',('gender', 'M'),('last_name', 'Baek')) 
 #orFunc = ouAinda(selectFunc,'=',('first_name','Parto'),('first_name','Adil'),('first_name','xes'))
 #dados_ordenados = ordenaPor(whereFunc, 'last_name')
 
-imprimeFunc(joinFunc)
+#imprimeFunc(joinUsingFunc)
 
 
 #insere('employees', emp_no=10011, birth_date='1953-11-07', first_name='Mary', last_name='Sluis', gender='F', hire_date='1990-01-22')
@@ -375,3 +411,4 @@ imprimeFunc(joinFunc)
 #atualiza('employees', 'emp_no', '10001', first_name='George', last_name='NULL', )
 
 #deletaCondicao('employees', 'emp_no', '>', '10005')
+
