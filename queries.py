@@ -401,30 +401,3 @@ def juntaComCondicao(tabela1, tabela2, campo1, campo2, operador):
                 dados_juntos.append(linha_junta)
 
     return dados_juntos
-
-
-
-
-#importaCSV('employees.csv') # importa do .csv
-#importaBanco('employees', 'employees') # importa do servidor MYSQL direto
-##selectFunc = seleciona2('employees','*')
-##selectFunc2 = seleciona2('titles','*')
-
-#joinUsingFunc = juntaUsando(selectFunc, selectFunc2, 'emp_no')
-##joinOnFunc = juntaComCondicao(selectFunc, selectFunc2, 'emp_no' ,'emp_no', '=')
-#joinOnFunc = juntaComCondicao(selectFunc, selectFunc2, 'emp_no' ,'emp_no', '>=' ,'499925')
-#whereFunc = onde(joinOnFunc,'first_name', '=' , 'Parto')
-##imprimeFunc(joinOnFunc)
-#whereFunc = onde(selectFunc,'first_name', '=' , 'Parto')
-#andFunc = eAinda(whereFunc, '=',('gender', 'M'),('last_name', 'Baek')) 
-#orFunc = ouAinda(selectFunc,'=',('first_name','Parto'),('first_name','Adil'),('first_name','xes'))
-#dados_ordenados = ordenaPor(whereFunc, 'last_name')
-
-#imprimeFunc(joinUsingFunc)
-
-
-#insere('employees', emp_no=10011, birth_date='1953-11-07', first_name='Mary', last_name='Sluis', gender='F', hire_date='1990-01-22')
-#deleta('employees', 'emp_no', '1002')
-#atualiza('employees', 'emp_no', '10001', first_name='George', last_name='NULL', )
-
-#deletaCondicao('employees', 'emp_no', '>', '10005')
