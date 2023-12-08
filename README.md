@@ -59,3 +59,26 @@ junta - realiza junção de tabelas para combinar dados relacionados.
 ``seleciona * de <tabela1> junta <tabela2> usando (campo) `` → junta duas tabelas baseado em um campo específico
 
 ``seleciona * de <tabela1> junta <tabela2> em tabela1.campo1 = tabela2.campo2 `` → junta duas tabelas baseado em uma condição, suporta os operadores =, >, <, >= e <=
+
+## Exemplos de comandos baseado na base de dados Employees:
+Exemplos de uso com a base de dados Employees, disponível em: https://github.com/datacharmer/test_db
+
+importa employees do csv
+
+importa departments de employees
+
+seleciona * de employees onde emp_no=10001
+
+seleciona * de employees onde emp_no=1000100
+
+insere em employees (emp_no, birth_date, first_name, last_name, gender, hire_date) valores (1000100, 2000-01-01, Primeiro, Ultimo, M, '2023-01-01')
+
+atualiza employees para hire_date=2023-01-01, last_name=Nome onde emp_no=1000100
+
+deleta de employees onde emp_no=1000100
+
+seleciona * de employees onde gender = M e hire_date > 1999-01-01
+
+seleciona * de employees junta titles usando (emp_no)
+
+seleciona * de employees junta titles em employees.emp_no = titles.emp_no
