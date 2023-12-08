@@ -42,7 +42,7 @@ junta - realiza junção de tabelas para combinar dados relacionados.
 
 ``atualiza <tabela> para campo1=valor1, campo2=valor2, ... onde campo=valor`` → atualiza os dados em uma tabela conforme uma condição (campo=valor)
 
-``deleta <tabela>`` → deleta uma tabela
+``deleta tabela <tabela>`` → deleta uma tabela
 
 ``deleta de <tabela> onde campo=valor`` → remove os dados em uma tabela conforme uma condição específica funciona para os operadores >, >=, <, <= e =
 
@@ -65,7 +65,9 @@ Exemplos de uso com a base de dados Employees, disponível em: https://github.co
 
 importa employees do csv
 
-importa departments de employees
+importa titles de employees
+
+seleciona * de titles
 
 seleciona * de employees onde emp_no=10001
 
@@ -77,7 +79,11 @@ atualiza employees para hire_date=2023-01-01, last_name=Nome onde emp_no=1000100
 
 deleta de employees onde emp_no=1000100
 
-seleciona * de employees onde gender = M e hire_date > 1999-01-01
+deleta de employees onde emp_no > 10005
+
+deleta tabela titles
+
+seleciona title, to_date de titles onde title = Engineer e to_date = 9999-01-01
 
 seleciona * de employees junta titles usando (emp_no)
 
